@@ -6,7 +6,7 @@ const wss = new WebSocketServer({port: PORT});
 // In-memory leaderboard (Map: nickname -> player data)
 const leaderboard = new Map();
 
-console.log(`🚀 WebSocket server running on ws://localhost:${PORT}`);
+console.log(`WebSocket server running on ws://localhost:${PORT}`);
 
 wss.on('connection', (ws) => {
 	console.log('👤 New client connected');
@@ -26,16 +26,16 @@ wss.on('connection', (ws) => {
 			const message = JSON.parse(data.toString());
 			handleMessage(message, ws);
 		} catch (error) {
-			console.error('❌ Invalid message:', error);
+			console.error('Invalid message:', error);
 		}
 	});
 
 	ws.on('close', () => {
-		console.log('👋 Client disconnected');
+		console.log('Client disconnected');
 	});
 
 	ws.on('error', (error) => {
-		console.error('⚠️ WebSocket error:', error);
+		console.error('WebSocket error:', error);
 	});
 });
 
@@ -52,7 +52,7 @@ function handleMessage(message, ws) {
 			break;
 
 		default:
-			console.warn('⚠️ Unknown message type:', type);
+			console.warn('Unknown message type:', type);
 	}
 }
 
@@ -61,7 +61,7 @@ function handleScoreSubmit(payload) {
 
 	// Validate input
 	if (!nickname || typeof score !== 'number') {
-		console.warn('⚠️ Invalid score submission:', payload);
+		console.warn('Invalid score submission:', payload);
 		return;
 	}
 
@@ -77,7 +77,7 @@ function handleScoreSubmit(payload) {
 			id: generateId(),
 		});
 
-		console.log(`✅ Score updated: ${nickname} = ${score} (${framework})`);
+		console.log(`Score updated: ${nickname} = ${score} (${framework})`);
 
 		// Broadcast updated leaderboard to all clients
 		broadcastLeaderboard();
@@ -112,9 +112,9 @@ function generateId() {
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
-	console.log('🛑 Shutting down server...');
+	console.log('Shutting down server...');
 	wss.close(() => {
-		console.log('✅ Server closed');
+		console.log('Server closed');
 		process.exit(0);
 	});
 });

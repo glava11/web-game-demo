@@ -13,18 +13,18 @@ export function useWebSocket() {
 			ws.value = new WebSocket(WS_URL);
 
 			ws.value.onopen = () => {
-				console.log('✅ WebSocket connected');
+				console.log('WebSocket connected');
 				connected.value = true;
 				error.value = null;
 			};
 
 			ws.value.onclose = () => {
-				console.log('👋 WebSocket disconnected');
+				console.log('WebSocket disconnected');
 				connected.value = false;
 			};
 
 			ws.value.onerror = (event) => {
-				console.error('❌ WebSocket error:', event);
+				console.error('WebSocket error:', event);
 				error.value = 'Connection error';
 			};
 

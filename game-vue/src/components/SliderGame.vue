@@ -1,9 +1,16 @@
 <script setup lang="ts">
 import { ref, onUnmounted } from 'vue'
 import { useGameStore } from '../stores/gameStore'
+// import { useLeaderboardStore } from '../stores/leaderboardStore'
 import { getScoreRating } from '../utils/scoring'
 
+// Props - accept WebSocket submit function
+const props = defineProps<{
+  onScoreSubmit: (score: number) => void
+}>()
+
 const gameStore = useGameStore()
+// const leaderboardStore = useLeaderboardStore()
 const animationFrameId = ref<number | null>(null)
 const startTime = ref<number>(0)
 
@@ -33,11 +40,16 @@ function animate() {
 }
 
 function stopGame() {
-  if (animationFrameId.value) {
-    cancelAnimationFrame(animationFrameId.value)
-    animationFrameId.value = null
-  }
-  gameStore.stopGame()
+	if (animationFrameId.value) {
+		cancelAnimationFrame(animationFrameId.value)
+		animationFrameId.value = null
+	}
+	gameStore.stopGame()
+
+	// Submit score via WebSocket
+	if (gameStore.currentScore !== null) {
+		props.onScoreSubmit(gameStore.currentScore)
+	}
 }
 
 function playAgain() {
