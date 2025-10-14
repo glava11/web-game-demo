@@ -17,7 +17,7 @@ export function calculateScore(position: number, target: number = 50): number {
 	const maxScore = 1000;
 	const penaltyPerPercent = 20;
 
-	const score = maxScore - Math.floor(distance * penaltyPerPercent);
+	const score = maxScore - Math.round(distance * penaltyPerPercent);
 
 	// Ensure minimum 0
 	return Math.max(0, score);
