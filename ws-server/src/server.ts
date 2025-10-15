@@ -66,7 +66,8 @@ wss.on('connection', (ws: WebSocket) => {
 	});
 
 	ws.on('close', () => {
-		console.log('Client disconnected');
+		TOTAL_CONNECTIONS--;
+		console.log('Client disconnected Total connections: ', TOTAL_CONNECTIONS);
 		clientRateLimits.delete(ws);
 	});
 

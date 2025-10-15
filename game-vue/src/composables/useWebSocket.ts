@@ -1,4 +1,4 @@
-import {ref, onUnmounted} from 'vue';
+import {ref, onUnmounted, watch} from 'vue';
 import type {GameMessage, ScoreSubmission} from '../types/game.types';
 
 const WS_URL = 'ws://localhost:8080';
@@ -8,6 +8,10 @@ export function useWebSocket() {
 	const connected = ref(false);
 	const error = ref<string | null>(null);
 
+	const reconnectInterval: number = 3000;
+	const reconnectTimer = ref<number | null>(null);
+	const isReconnecting = ref(false);
+
 	function connect() {
 		try {
 			ws.value = new WebSocket(WS_URL);
@@ -16,11 +20,13 @@ export function useWebSocket() {
 				console.log('WebSocket connected');
 				connected.value = true;
 				error.value = null;
+				isReconnecting.value = false;
 			};
 
 			ws.value.onclose = () => {
 				console.log('WebSocket disconnected');
 				connected.value = false;
+				isReconnecting.value = true;
 			};
 
 			ws.value.onerror = (event) => {
@@ -64,6 +70,25 @@ export function useWebSocket() {
 		});
 	}
 
+	// Reconnect
+	watch(connected, (isConnected) => {
+		if (!isConnected && reconnectTimer.value === null) {
+			isReconnecting.value = true;
+			reconnectTimer.value = window.setInterval(() => {
+				console.log('Attempting to reconnect...');
+				connect();
+			}, reconnectInterval);
+		}
+
+		// Clear timeout if reconnected
+		if (isConnected && reconnectTimer.value !== null) {
+			isReconnecting.value = false;
+			console.log('Reconnection succeeded!');
+			clearInterval(reconnectTimer.value);
+			reconnectTimer.value = null;
+		}
+	});
+
 	// Message handlers - to be set by components
 	const messageHandlers = new Map<string, (payload: any) => void>();
 
@@ -81,6 +106,9 @@ export function useWebSocket() {
 	// Cleanup on component unmount
 	onUnmounted(() => {
 		disconnect();
+		if (reconnectTimer.value !== null) {
+			clearInterval(reconnectTimer.value);
+		}
 	});
 
 	return {
@@ -91,5 +119,6 @@ export function useWebSocket() {
 		send,
 		submitScore,
 		onMessage,
+		isReconnecting,
 	};
 }
