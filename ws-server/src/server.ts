@@ -155,7 +155,7 @@ function handleScoreSubmit(payload: {nickname?: string; score?: number; framewor
 			id: generateId(),
 		});
 
-		console.log(`Score updated: ${nickname} = ${score} (${framework})`);
+		console.log(`Score updated: ${nickname} = ${score}, via ${framework}`);
 
 		// Broadcast updated leaderboard to all clients
 		broadcastLeaderboard();

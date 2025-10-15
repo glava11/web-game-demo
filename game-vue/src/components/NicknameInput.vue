@@ -60,7 +60,7 @@ function handleSubmit() {
 					</p>
 				</div>
 
-				<button type="submit" class="btn btn-primary w-full text-xl py-4">🎮 Start Playing</button>
+				<button type="submit" class="btn btn-primary w-full text-xl py-4">Continue</button>
 			</form>
 
 			<p class="text-gray-500 text-sm text-center mt-4">Your scores will appear on the global leaderboard</p>

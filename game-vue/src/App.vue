@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import NicknameInput from './components/NicknameInput.vue'
 import SliderGame from './components/SliderGame.vue'
 import Leaderboard from './components/Leaderboard.vue'
@@ -10,8 +10,25 @@ import type { Player } from './types/game.types'
 const leaderboardStore = useLeaderboardStore()
 const { connected, connect, submitScore, onMessage, isReconnecting } = useWebSocket()
 
-const hasNickname = ref(false)
+// const hasNickname = ref(false)
+const pendingScore = ref<number | null>(null)
+const showNicknamePrompt = ref(false)
 
+// Check if score qualifies for leaderboard (top 20)
+const scoreQualifies = computed(() => {
+  if (pendingScore.value === null) return false
+
+  const players = leaderboardStore.players
+
+  // If less than 20 players, always qualify
+  if (players.length < 20) return true
+
+  // Check if score is higher than 20th place
+  const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
+  const lowestScore = sortedPlayers[19]?.score ?? 0
+
+  return pendingScore.value > lowestScore
+})
 
 onMounted(() => {
   // Connect to WebSocket server
@@ -22,13 +39,29 @@ onMounted(() => {
   })
 })
 
+function handleScoreAchieved(score: number) {
+  pendingScore.value = score
 
-
-function handleNicknameReady() {
-  hasNickname.value = true
+  // Check if we need to prompt for nickname
+  if (scoreQualifies.value && !leaderboardStore.currentNickname) {
+    showNicknamePrompt.value = true
+  } else if (leaderboardStore.currentNickname) {
+    // Already have nickname, submit directly
+    submitScoreToServer(score)
+  }
+  // Otherwise, score doesn't qualify, just show result
 }
 
-function handleScoreSubmit(score: number) {
+function handleNicknameReady() {
+  showNicknamePrompt.value = false
+
+  if (pendingScore.value !== null) {
+    submitScoreToServer(pendingScore.value)
+    pendingScore.value = null
+  }
+}
+
+function submitScoreToServer(score: number) {
   submitScore({
     nickname: leaderboardStore.currentNickname,
     score,
@@ -41,19 +74,34 @@ function handleScoreSubmit(score: number) {
 	<div id="app">
 		<!-- Connection status -->
 		<div class="fixed top-4 right-4 z-50">
-			<div class="px-4 py-2 rounded-full text-sm font-semibold" :class="connected ? 'bg-green-500 bg-opacity-20 text-green-400' : 'bg-red-500 bg-opacity-20 text-red-400'">{{ connected ? '🟢 Connected' : isReconnecting ? '🔴 reconnecting...' : '🔴 Disconnected' }}</div>
+			<div class="px-4 py-2 rounded-full text-sm font-semibold" :class="connected ? 'bg-green-500 bg-opacity-20 text-green-400' : 'bg-red-500 bg-opacity-20 text-red-400'">
+				{{ connected ? '🟢 Connected' : isReconnecting ? '🔴 reconnecting...' : '🔴 Disconnected' }}
+			</div>
 		</div>
 
 		<!-- Main content -->
 		<div class="container mx-auto px-4 py-8 space-y-8">
-			<!-- Nickname input (only show if no nickname set) -->
-			<NicknameInput v-if="!hasNickname" @ready="handleNicknameReady" />
+			<!-- Nickname prompt modal (overlay) -->
+			<div v-if="showNicknamePrompt" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
+				<div class="max-w-md w-full">
+					<div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
+						<h2 class="text-2xl font-bold mb-4 text-center">🎉 Great Score!</h2>
+						<p class="text-gray-400 text-center mb-6">
+							You scored <span class="text-yellow-400 font-bold text-2xl">{{ pendingScore }}</span> points!
+							<br />
+							Enter your nickname to save it on the leaderboard.
+						</p>
+						<NicknameInput @ready="handleNicknameReady" />
+						<button @click="showNicknamePrompt = false; pendingScore = null" class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300">Skip (don't save)</button>
+					</div>
+				</div>
+			</div>
 
-			<!-- Game and Leaderboard (show after nickname set) -->
-			<template v-else>
-				<SliderGame :on-score-submit="handleScoreSubmit" />
-				<Leaderboard />
-			</template>
+			<!-- Game -->
+			<SliderGame :on-score-submit="handleScoreAchieved" />
+
+			<!-- Leaderboard -->
+			<Leaderboard />
 		</div>
 	</div>
 </template>
