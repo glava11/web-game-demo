@@ -1,28 +1,32 @@
-import {describe, it, expect, beforeEach} from 'vitest';
+import {describe, it, expect, beforeEach, vi} from 'vitest';
 import {mount} from '@vue/test-utils';
 import {createPinia, setActivePinia} from 'pinia';
 import SliderGame from './SliderGame.vue';
 
 describe('SliderGame Component', () => {
+	let onScoreSubmit: ReturnType<typeof vi.fn>;
+	let wrapper: ReturnType<typeof mount>;
 	beforeEach(() => {
 		// Create a fresh Pinia instance for each test
 		setActivePinia(createPinia());
+		onScoreSubmit = vi.fn().mockResolvedValue(undefined);
+		wrapper = mount(SliderGame, {
+			props: {
+				onScoreSubmit,
+			},
+		});
 	});
 
 	it('renders the game title', () => {
-		const wrapper = mount(SliderGame);
 		expect(wrapper.text()).toContain('Quicky Finger');
 	});
 
 	it('shows start button initially', () => {
-		const wrapper = mount(SliderGame);
 		const startButton = wrapper.find('button');
 		expect(startButton.text()).toContain('Start Game');
 	});
 
 	it('shows stop button when game is playing', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Click start button
 		await wrapper.find('button').trigger('click');
 
@@ -32,8 +36,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('displays slider track when playing', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Initially no slider visible
 		expect(wrapper.find('.bg-gray-700').exists()).toBe(false);
 
@@ -45,8 +47,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('displays score after stopping', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Start game
 		await wrapper.find('button').trigger('click');
 
@@ -60,8 +60,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('shows play again button after game ends', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Start and stop game
 		await wrapper.find('button').trigger('click');
 		await wrapper.find('button').trigger('click');
@@ -72,8 +70,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('resets game when play again is clicked', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Complete one game
 		await wrapper.find('button').trigger('click'); // Start
 		await wrapper.find('button').trigger('click'); // Stop
@@ -88,7 +84,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('displays instructions', () => {
-		const wrapper = mount(SliderGame);
 		const text = wrapper.text();
 
 		expect(text).toContain('Perfect center');
@@ -96,8 +91,6 @@ describe('SliderGame Component', () => {
 	});
 
 	it('shows best score after first game', async () => {
-		const wrapper = mount(SliderGame);
-
 		// Initially no best score shown
 		expect(wrapper.text()).not.toContain('Best Score');
 

@@ -6,7 +6,7 @@ import { getScoreRating } from '../utils/scoring'
 
 // Props - accept WebSocket submit function
 const props = defineProps<{
-  onScoreSubmit: (score: number) => void
+  onScoreSubmit: (score: number) => Promise<void> | void
 }>()
 
 const gameStore = useGameStore()
@@ -39,7 +39,7 @@ function animate() {
   }
 }
 
-function stopGame() {
+async function stopGame() {
 	if (animationFrameId.value) {
 		cancelAnimationFrame(animationFrameId.value)
 		animationFrameId.value = null
@@ -48,7 +48,12 @@ function stopGame() {
 
 	// Submit score via WebSocket
 	if (gameStore.currentScore !== null) {
-		props.onScoreSubmit(gameStore.currentScore)
+		// props.onScoreSubmit(gameStore.currentScore)
+		try {
+			await props.onScoreSubmit(gameStore.currentScore)
+		} catch (error) {
+			console.error('Error submitting score:', error)
+		}
 	}
 }
 

@@ -45,38 +45,38 @@ describe('calculateScore', () => {
 
 describe('getScoreRating', () => {
 	it('returns correct rating for perfect score', () => {
-		expect(getScoreRating(1000)).toBe('PERFECT!');
+		expect(getScoreRating(1000)).toBe('PERFECT');
 	});
 
 	it('returns correct rating for excellent score', () => {
-		expect(getScoreRating(990)).toBe('Excellent!');
-		expect(getScoreRating(950)).toBe('Excellent!');
+		expect(getScoreRating(990)).toBe('Excellent');
+		expect(getScoreRating(950)).toBe('Excellent');
 	});
 
 	it('returns correct rating for great score', () => {
-		expect(getScoreRating(900)).toBe('Great!');
-		expect(getScoreRating(850)).toBe('Great!');
+		expect(getScoreRating(900)).toBe('Great');
+		expect(getScoreRating(850)).toBe('Great');
 	});
 
 	it('returns correct rating for good score', () => {
-		expect(getScoreRating(800)).toBe('Good!');
-		expect(getScoreRating(700)).toBe('Good!');
+		expect(getScoreRating(800)).toBe('Good');
+		expect(getScoreRating(700)).toBe('Good');
 	});
 
 	it('returns correct rating for okay score', () => {
-		expect(getScoreRating(600)).toBe('Not bad!');
-		expect(getScoreRating(500)).toBe('Not bad!');
+		expect(getScoreRating(600)).toBe('Not bad');
+		expect(getScoreRating(500)).toBe('Not bad');
 	});
 
 	it('returns correct rating for low score', () => {
-		expect(getScoreRating(400)).toBe('Try again!');
-		expect(getScoreRating(100)).toBe('Try again!');
-		expect(getScoreRating(0)).toBe('Try again!');
+		expect(getScoreRating(400)).toBe('Try again');
+		expect(getScoreRating(100)).toBe('Try again');
+		expect(getScoreRating(0)).toBe('Try again');
 	});
 
 	it('handles boundary scores correctly', () => {
-		expect(getScoreRating(949)).toBe('Great!'); // Just below excellent
-		expect(getScoreRating(950)).toBe('Excellent!'); // At excellent threshold
-		expect(getScoreRating(999)).toBe('Excellent!'); // Just below perfect
+		expect(getScoreRating(949)).toBe('Great'); // Just below excellent
+		expect(getScoreRating(950)).toBe('Excellent'); // At excellent threshold
+		expect(getScoreRating(999)).toBe('Excellent'); // Just below perfect
 	});
 });
