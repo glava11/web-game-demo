@@ -8,7 +8,7 @@ export const useLeaderboardStore = defineStore('leaderboard', () => {
 	const currentNickname = ref<string>('');
 
 	// Computed
-	const topPlayers = computed(() => players.value.slice(0, 20));
+	const topPlayers = computed(() => players.value.slice(0, 20).sort((a, b) => b.score - a.score));
 
 	const currentPlayerRank = computed(() => {
 		if (!currentNickname.value) return null;

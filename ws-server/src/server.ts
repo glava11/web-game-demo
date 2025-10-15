@@ -144,24 +144,23 @@ function handleScoreSubmit(payload: {nickname?: string; score?: number; framewor
 	}
 
 	// Update or add player (keep highest score)
-	const existingPlayer = leaderboard.get(nickname);
+	// const existingPlayer = leaderboard.get(nickname);
+	// if (!existingPlayer || score > existingPlayer.score) {
+	leaderboard.set(nickname, {
+		nickname,
+		score,
+		framework,
+		timestamp: Date.now(),
+		id: generateId(),
+	});
 
-	if (!existingPlayer || score > existingPlayer.score) {
-		leaderboard.set(nickname, {
-			nickname,
-			score,
-			framework,
-			timestamp: Date.now(),
-			id: generateId(),
-		});
+	console.log(`Score updated: ${nickname} = ${score}, via ${framework}`);
 
-		console.log(`Score updated: ${nickname} = ${score}, via ${framework}`);
-
-		// Broadcast updated leaderboard to all clients
-		broadcastLeaderboard();
-	} else {
-		console.log(`Score ${score} not higher than existing ${existingPlayer.score} for ${nickname}`);
-	}
+	// Broadcast updated leaderboard to all clients
+	broadcastLeaderboard();
+	// } else {
+	// 	console.log(`Score ${score} not higher than existing ${existingPlayer.score} for ${nickname}`);
+	// }
 }
 
 function sanitizeNickname(nickname: unknown): string | null {
