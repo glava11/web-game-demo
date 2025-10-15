@@ -3,17 +3,7 @@ export type MessageType = 'SCORE_SUBMIT' | 'LEADERBOARD_UPDATE' | 'PING' | 'PONG
 
 export type Framework = 'vue' | 'react' | 'angular';
 
-// erasableSyntaxOnly !!!
-// Score rating enum (for consistency)
-// export enum ScoreRating {
-//   PERFECT = 'PERFECT!',
-//   EXCELLENT = 'Excellent!',
-//   GREAT = 'Great!',
-//   GOOD = 'Good!',
-//   NOT_BAD = 'Not bad!',
-//   TRY_AGAIN = 'Try again!'
-// }
-
+// avoiding enum to respect erasableSyntaxOnly
 // "as const" Type Assertion => creates a readonly object with literal types
 // keyof typeof ScoreRating => use the keys as types
 export const ScoreRating = {
