@@ -3,6 +3,7 @@ import { ref, onUnmounted } from 'vue'
 import { useGameStore } from '../stores/gameStore'
 // import { useLeaderboardStore } from '../stores/leaderboardStore'
 import { getScoreRating } from '../utils/scoring'
+import { celebrateScore, celebrateNewBest } from '../utils/confetti'
 
 // Props - accept WebSocket submit function
 const props = defineProps<{
@@ -46,9 +47,14 @@ async function stopGame() {
 	}
 	gameStore.stopGame()
 
-	// Submit score via WebSocket
+	// Celebrate the score and submit it via WebSocket
 	if (gameStore.currentScore !== null) {
-		// props.onScoreSubmit(gameStore.currentScore)
+		celebrateScore(gameStore.currentScore)
+		// Extra celebration for new personal best
+		if (gameStore.currentScore > gameStore.bestScore) {
+			setTimeout(() => celebrateNewBest(), 500)
+		}
+
 		try {
 			await props.onScoreSubmit(gameStore.currentScore)
 		} catch (error) {
