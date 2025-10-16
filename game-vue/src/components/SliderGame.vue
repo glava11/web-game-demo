@@ -4,6 +4,7 @@ import { useGameStore } from '../stores/gameStore'
 // import { useLeaderboardStore } from '../stores/leaderboardStore'
 import { getScoreRating } from '../utils/scoring'
 import { celebrateScore, celebrateNewBest } from '../utils/confetti'
+import { playStart, playStop, playScore, playNewBest } from '../utils/sounds'
 
 // Props - accept WebSocket submit function
 const props = defineProps<{
@@ -14,19 +15,38 @@ const gameStore = useGameStore()
 // const leaderboardStore = useLeaderboardStore()
 const animationFrameId = ref<number | null>(null)
 const startTime = ref<number>(0)
-
+// FPS tracking
+const frameRate = ref<number>(0)             // displayed FPS
+const lastFrameTime = ref<number | null>(null)
+const fpsSmoothingAlpha = 0.12
 // Game configuration
 const CYCLE_DURATION = 2000 // 2 seconds for full left-right cycle
 
 function startGame() {
   gameStore.startGame()
   startTime.value = performance.now()
+  // reset FPS tracking
+  lastFrameTime.value = null
+  frameRate.value = 0
+
+  playStart()
   animate()
 }
 
 function animate() {
   const currentTime = performance.now()
   const elapsed = currentTime - startTime.value
+
+  // FPS
+  if (lastFrameTime.value !== null) {
+    const delta = currentTime - lastFrameTime.value
+    if (delta > 0) {
+      const instantFps = 1000 / delta
+      // exponential moving average to smooth displayed FPS
+      frameRate.value = +(instantFps * fpsSmoothingAlpha + frameRate.value * (1 - fpsSmoothingAlpha)).toFixed(2)
+    }
+  }
+  lastFrameTime.value = currentTime
 
   // Calculate position using sine wave (smooth oscillation)
   const progress = (elapsed % CYCLE_DURATION) / CYCLE_DURATION
@@ -45,14 +65,21 @@ async function stopGame() {
 		cancelAnimationFrame(animationFrameId.value)
 		animationFrameId.value = null
 	}
+	// stop FPS tracking
+    lastFrameTime.value = null
+	playStop()
 	gameStore.stopGame()
 
 	// Celebrate the score and submit it via WebSocket
 	if (gameStore.currentScore !== null) {
+		playScore(gameStore.currentScore)
 		celebrateScore(gameStore.currentScore)
 		// Extra celebration for new personal best
 		if (gameStore.currentScore > gameStore.bestScore) {
-			setTimeout(() => celebrateNewBest(), 500)
+			setTimeout(() => {
+				celebrateNewBest()
+				playNewBest()
+			}, 500)
 		}
 
 		try {
@@ -82,6 +109,11 @@ onUnmounted(() => {
 		<div class="text-center mb-8">
 			<h1 class="text-5xl font-bold mb-2">Quicky Finger</h1>
 			<p class="text-gray-400">Stop the slider as close to center as possible!</p>
+		</div>
+
+		<!-- FPS display -->
+		<div class="text-sm text-gray-400 mt-2">
+			FPS: <span class="font-mono text-white">{{ frameRate }}</span>
 		</div>
 
 		<!-- Best Score Display -->
