@@ -146,12 +146,21 @@ function handleScoreSubmit(payload: {nickname?: string; score?: number; framewor
 	// Update or add player (keep highest score)
 	// const existingPlayer = leaderboard.get(nickname);
 	// if (!existingPlayer || score > existingPlayer.score) {
-	leaderboard.set(nickname, {
+	// leaderboard.set(nickname, {
+	// 	nickname,
+	// 	score,
+	// 	framework,
+	// 	timestamp: Date.now(),
+	// 	id: generateId(),
+	// });
+	// add every score submission as a new entry with unique id
+	const id = generateId();
+	leaderboard.set(id, {
+		id,
 		nickname,
 		score,
 		framework,
 		timestamp: Date.now(),
-		id: generateId(),
 	});
 
 	console.log(`Score updated: ${nickname} = ${score}, via ${framework}`);

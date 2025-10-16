@@ -6,6 +6,7 @@ import Leaderboard from './components/Leaderboard.vue'
 import { useLeaderboardStore } from './stores/leaderboardStore'
 import { useWebSocket } from './composables/useWebSocket'
 import type { Player } from './types/game.types'
+import { useGameStore } from './stores/gameStore'
 
 const leaderboardStore = useLeaderboardStore()
 const { connected, connect, submitScore, onMessage, isReconnecting } = useWebSocket()
@@ -13,10 +14,15 @@ const { connected, connect, submitScore, onMessage, isReconnecting } = useWebSoc
 // const hasNickname = ref(false)
 const pendingScore = ref<number | null>(null)
 const showNicknamePrompt = ref(false)
+const gameStore = useGameStore()
 
 // Check if score qualifies for leaderboard (top 20)
 const scoreQualifies = computed(() => {
   if (pendingScore.value === null) return false
+  if (pendingScore.value && pendingScore.value < gameStore.bestScore) return false
+
+  console.log('Checking if pendingScore.value: ', pendingScore.value)
+  console.log('is less then gameStore.bestScore: ', gameStore.bestScore)
 
   const players = leaderboardStore.players
 
@@ -42,14 +48,17 @@ onMounted(() => {
 function handleScoreAchieved(score: number) {
   pendingScore.value = score
 
-  // Check if we need to prompt for nickname
-  if (scoreQualifies.value && !leaderboardStore.currentNickname) {
-    showNicknamePrompt.value = true
-  } else if (leaderboardStore.currentNickname) {
-    // Already have nickname, submit directly
-    submitScoreToServer(score)
+  if (scoreQualifies.value) {
+    // Check if we need to prompt for nickname
+    if (!leaderboardStore.currentNickname) {
+      showNicknamePrompt.value = true
+    } else if (leaderboardStore.currentNickname) {
+      // Already have nickname, submit directly
+      submitScoreToServer(score)
+    }
+  } else {
+    // Otherwise, score doesn't qualify, just show result
   }
-  // Otherwise, score doesn't qualify, just show result
 }
 
 function handleNicknameReady() {
@@ -75,7 +84,7 @@ function submitScoreToServer(score: number) {
 		<!-- Connection status -->
 		<div class="fixed top-4 right-4 z-50">
 			<div class="px-4 py-2 rounded-full text-sm font-semibold" :class="connected ? 'bg-green-500 bg-opacity-20 text-green-400' : 'bg-red-500 bg-opacity-20 text-red-400'">
-				{{ connected ? '🟢 Connected' : isReconnecting ? '🔴 reconnecting...' : '🔴 Disconnected' }}
+				{{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }}
 			</div>
 		</div>
 
