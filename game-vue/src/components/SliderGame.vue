@@ -166,7 +166,7 @@ onUnmounted(() => {
 					</div>
 
 					<!-- Moving slider indicator -->
-					<div class="absolute top-0 bottom-0 w-3 rounded transition-transform"
+					<div class="slider absolute top-0 bottom-0 w-3 rounded transition-transform"
 						 :style="{
 							left: gameStore.sliderPosition + '%',
 							transform: 'translateX(-50%)',

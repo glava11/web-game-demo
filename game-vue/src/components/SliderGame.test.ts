@@ -47,7 +47,7 @@ describe('SliderGame Component', () => {
 
 	it('displays slider track when playing', async () => {
 		// Initially no slider visible
-		expect(wrapper.find('.bg-gray-700').exists()).toBe(false);
+		expect(wrapper.find('.slider').exists()).toBe(false);
 
 		// Start game
 		await wrapper.find('button').trigger('click');
@@ -57,7 +57,7 @@ describe('SliderGame Component', () => {
 		await wrapper.vm.$nextTick();
 
 		// Slider should be visible
-		expect(wrapper.find('.bg-gray-700').exists()).toBe(true);
+		expect(wrapper.find('.slider').exists()).toBe(true);
 	});
 
 	it('displays score after stopping', async () => {

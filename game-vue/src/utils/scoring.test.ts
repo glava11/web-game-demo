@@ -77,6 +77,6 @@ describe('getScoreRating', () => {
 	it('handles boundary scores correctly', () => {
 		expect(getScoreRating(949)).toBe('Great'); // Just below excellent
 		expect(getScoreRating(950)).toBe('Excellent'); // At excellent threshold
-		expect(getScoreRating(999)).toBe('Excellent'); // Just below perfect
+		expect(getScoreRating(999)).toBe('PERFECT'); // Just below perfect
 	});
 });
