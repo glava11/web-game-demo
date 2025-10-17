@@ -1,4 +1,4 @@
-import {describe, it, expect, beforeEach, vi} from 'vitest';
+import {describe, it, expect, beforeEach, vi, afterEach} from 'vitest';
 import {mount} from '@vue/test-utils';
 import {createPinia, setActivePinia} from 'pinia';
 import SliderGame from './SliderGame.vue';
@@ -7,6 +7,7 @@ describe('SliderGame Component', () => {
 	let onScoreSubmit: ReturnType<typeof vi.fn>;
 	let wrapper: ReturnType<typeof mount>;
 	beforeEach(() => {
+		vi.useFakeTimers();
 		// Create a fresh Pinia instance for each test
 		setActivePinia(createPinia());
 		onScoreSubmit = vi.fn().mockResolvedValue(undefined);
@@ -17,18 +18,27 @@ describe('SliderGame Component', () => {
 		});
 	});
 
+	afterEach(() => {
+		vi.useRealTimers();
+	});
+
 	it('renders the game title', () => {
 		expect(wrapper.text()).toContain('Quicky Finger');
 	});
 
-	it('shows start button initially', () => {
+	it('shows start button initially', async () => {
 		const startButton = wrapper.find('button');
+
 		expect(startButton.text()).toContain('Start Game');
 	});
 
 	it('shows stop button when game is playing', async () => {
 		// Click start button
 		await wrapper.find('button').trigger('click');
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
 
 		// Should now show stop button
 		const stopButton = wrapper.find('button');
@@ -42,6 +52,10 @@ describe('SliderGame Component', () => {
 		// Start game
 		await wrapper.find('button').trigger('click');
 
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
+
 		// Slider should be visible
 		expect(wrapper.find('.bg-gray-700').exists()).toBe(true);
 	});
@@ -49,6 +63,10 @@ describe('SliderGame Component', () => {
 	it('displays score after stopping', async () => {
 		// Start game
 		await wrapper.find('button').trigger('click');
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
 
 		// Stop game
 		await wrapper.find('button').trigger('click');
@@ -62,6 +80,11 @@ describe('SliderGame Component', () => {
 	it('shows play again button after game ends', async () => {
 		// Start and stop game
 		await wrapper.find('button').trigger('click');
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
+
 		await wrapper.find('button').trigger('click');
 
 		// Should have play again button
@@ -72,11 +95,20 @@ describe('SliderGame Component', () => {
 	it('resets game when play again is clicked', async () => {
 		// Complete one game
 		await wrapper.find('button').trigger('click'); // Start
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
+
 		await wrapper.find('button').trigger('click'); // Stop
 
 		// Click play again
 		const playAgainButton = wrapper.find('button');
 		await playAgainButton.trigger('click');
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
 
 		// Should be playing again
 		const stopButton = wrapper.find('button');
@@ -96,6 +128,11 @@ describe('SliderGame Component', () => {
 
 		// Complete one game
 		await wrapper.find('button').trigger('click'); // Start
+
+		// wait 3 seconds for button to show up
+		vi.advanceTimersByTime(3000);
+		await wrapper.vm.$nextTick();
+
 		await wrapper.find('button').trigger('click'); // Stop
 
 		// Play again

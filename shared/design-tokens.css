@@ -9,16 +9,16 @@
 	--color-angular: #dd0031;
 
 	/* Core Colors */
-	--color-primary: #3b82f6;
+	--color-primary: #ff00ff;
 	--color-secondary: #8b5cf6;
-	--color-success: #10b981;
+	--color-success: #31da58;
 	--color-warning: #f59e0b;
-	--color-danger: #ef4444;
+	--color-danger: #ef444422;
 	--color-info: #3b82f6;
 
 	/* Neutral Colors */
-	--color-bg-dark: #0f172a;
-	--color-bg-card: #1e293b;
+	--color-bg-dark: #1a0c2b;
+	--color-bg-card: #3d2e60;
 	--color-bg-elevated: #334155;
 	--color-text-primary: #f8fafc;
 	--color-text-secondary: #94a3b8;
@@ -29,6 +29,13 @@
 	--color-gold: #fbbf24;
 	--color-silver: #e5e7eb;
 	--color-bronze: #d97706;
+
+	--score-color: var(--color-gold);
+	--start-btn-text-color: var(--color-bg-dark);
+	--color-success-02: #31da582b;
+	--color-danger-02: #ef444425;
+	--color-bg-playground: #0c2106;
+	--color-indicator: #fbbe24c8;
 
 	/* Spacing Scale (8px base) */
 	--space-xs: 0.5rem; /* 8px */

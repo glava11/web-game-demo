@@ -21,9 +21,6 @@ const scoreQualifies = computed(() => {
   if (pendingScore.value === null) return false
   if (pendingScore.value && pendingScore.value < gameStore.bestScore) return false
 
-  console.log('Checking if pendingScore.value: ', pendingScore.value)
-  console.log('is less then gameStore.bestScore: ', gameStore.bestScore)
-
   const players = leaderboardStore.players
 
   // If less than 20 players, always qualify
@@ -80,43 +77,56 @@ function submitScoreToServer(score: number) {
 </script>
 
 <template>
-	<div id="app">
-		<!-- Connection status -->
-		<div class="fixed top-4 right-4 z-50">
-			<div class="px-4 py-2 rounded-full text-sm font-semibold" :class="connected ? 'bg-green-500 bg-opacity-20 text-green-400' : 'bg-red-500 bg-opacity-20 text-red-400'">
-				{{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }}
-			</div>
-		</div>
+  <div id="app">
+    <!-- Connection status -->
+    <div class="fixed top-4 right-4 z-50">
+      <div class="px-4 py-2 rounded-full text-sm font-semibold"
+           :class="connected ? 'bg-opacity-20 success' : ' bg-opacity-20 danger'">
+        {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }}
+      </div>
+    </div>
 
-		<!-- Main content -->
-		<div class="container mx-auto px-4 py-8 space-y-8">
-			<!-- Nickname prompt modal (overlay) -->
-			<div v-if="showNicknamePrompt" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
-				<div class="max-w-md w-full">
-					<div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
-						<h2 class="text-2xl font-bold mb-4 text-center">🎉 Great Score!</h2>
-						<p class="text-gray-400 text-center mb-6">
-							You scored <span class="text-yellow-400 font-bold text-2xl">{{ pendingScore }}</span> points!
-							<br />
-							Enter your nickname to save it on the leaderboard.
-						</p>
-						<NicknameInput @ready="handleNicknameReady" />
-						<button @click="showNicknamePrompt = false; pendingScore = null" class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300">Skip (don't save)</button>
-					</div>
-				</div>
-			</div>
+    <!-- Main content -->
+    <div class="container mx-auto px-4 py-8 space-y-8">
+      <!-- Nickname prompt modal (overlay) -->
+      <div v-if="showNicknamePrompt"
+           class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
+        <div class="max-w-md w-full">
+          <div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-4 text-center">🎉 Great Score!</h2>
+            <p class="text-gray-400 text-center mb-6">
+              You scored <span class="text-yellow-400 font-bold text-2xl">{{ pendingScore }}</span> points!
+              <br />
+              Enter your nickname to save it on the leaderboard.
+            </p>
+            <NicknameInput @ready="handleNicknameReady" />
+            <button @click="showNicknamePrompt = false; pendingScore = null"
+                    class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300">Skip (don't save)</button>
+          </div>
+        </div>
+      </div>
 
-			<!-- Game -->
-			<SliderGame :on-score-submit="handleScoreAchieved" />
+      <!-- Game -->
+      <SliderGame :on-score-submit="handleScoreAchieved" />
 
-			<!-- Leaderboard -->
-			<Leaderboard />
-		</div>
-	</div>
+      <!-- Leaderboard -->
+      <Leaderboard />
+    </div>
+  </div>
 </template>
 
 <style scoped>
 #app {
   min-height: 100vh;
+}
+
+.success {
+  color: var(--color-success);
+  background-color: var(--color-success-02);
+}
+
+.danger {
+  color: var(--color-danger);
+  background-color: var(--color-danger-02);
 }
 </style>

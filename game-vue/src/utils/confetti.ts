@@ -26,6 +26,12 @@ export function celebratePerfectScore() {
 			origin: {x: 1},
 			colors: colors,
 		});
+		confetti({
+			particleCount: 5,
+			spread: 70,
+			origin: {y: 0.6},
+			colors: colors,
+		});
 
 		if (Date.now() < end) {
 			requestAnimationFrame(frame);
@@ -36,34 +42,35 @@ export function celebratePerfectScore() {
 export function celebrateExcellentScore() {
 	// 950+ points
 	confetti({
-		particleCount: 100,
+		particleCount: 150,
 		spread: 70,
 		origin: {y: 0.6},
-		colors: ['#3b82f6', '#8b5cf6', '#10b981'],
+		colors: ['#3b82f6', '#8b5cf6', '#10b981', '#94a3b8'],
 	});
 }
 
 export function celebrateGreatScore() {
 	// 850+ points
 	confetti({
-		particleCount: 50,
+		particleCount: 75,
 		spread: 60,
 		origin: {y: 0.6},
-		colors: ['#3b82f6', '#10b981'],
+		colors: ['#3b82f6', '#10b981', '#94a3b8', '#64748b'],
 	});
 }
 
 export function celebrateGoodScore() {
 	// 700+ points
 	confetti({
-		particleCount: 30,
+		particleCount: 50,
 		spread: 50,
 		origin: {y: 0.6},
+		colors: ['#3b82f6', '#94a3b8', '#64748b'],
 	});
 }
 
 export function celebrateScore(score: number) {
-	if (score === 1000) {
+	if (score >= 995) {
 		celebratePerfectScore();
 	} else if (score >= 950) {
 		celebrateExcellentScore();

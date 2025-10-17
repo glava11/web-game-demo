@@ -29,7 +29,7 @@ export function calculateScore(position: number, target: number = 50): number {
  * Get rating message based on score
  */
 export function getScoreRating(score: number): (typeof ScoreRating)[keyof typeof ScoreRating] {
-	if (score === 1000) return ScoreRating.PERFECT;
+	if (score >= 995) return ScoreRating.PERFECT;
 	if (score >= 950) return ScoreRating.EXCELLENT;
 	if (score >= 850) return ScoreRating.GREAT;
 	if (score >= 700) return ScoreRating.GOOD;

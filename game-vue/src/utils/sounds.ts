@@ -42,6 +42,51 @@ class SoundManager {
 		}
 	}
 
+	// Countdown beeps - ascending tension
+	playCountdownBeep() {
+		this.playTone(440, 0.15, 'square');
+	}
+
+	// GO! - exciting start
+	playCountdownGo() {
+		// this.playTone(880, 0.2, 'square');
+		// setTimeout(() => this.playTone(1100, 0.25, 'square'), 100);
+		this.playTone(444, 0.55, 'square');
+	}
+
+	// Tension loop - plays while slider moves
+	private tensionInterval: number | null = null;
+	private tensionFrequency = 220;
+
+	startTension() {
+		this.stopTension(); // Clear any existing
+
+		this.tensionInterval = window.setInterval(() => {
+			// // Gradually increase frequency for building tension
+			// this.tensionFrequency = Math.min(this.tensionFrequency + 5, 440);
+			// this.playTone(this.tensionFrequency, 0.05, 'sawtooth');
+
+			// // Option 1: Heartbeat style
+			// this.playTone(100, 0.1, 'sine');
+			// setTimeout(() => this.playTone(100, 0.1, 'sine'), 100);
+
+			// // Option 2: Ticking clock
+			// this.playTone(1000, 0.02, 'square');
+
+			// Option 3: Rising siren
+			this.tensionFrequency = Math.min(this.tensionFrequency + 10, 880);
+			this.playTone(this.tensionFrequency, 0.05, 'sawtooth');
+		}, 500) as any;
+	}
+
+	stopTension() {
+		if (this.tensionInterval) {
+			clearInterval(this.tensionInterval);
+			this.tensionInterval = null;
+			this.tensionFrequency = 220; // Reset
+		}
+	}
+
 	// Game start - ascending tone
 	playStart() {
 		this.playTone(440, 0.1);
@@ -55,11 +100,11 @@ class SoundManager {
 
 	// Score reveal - based on quality
 	playScore(score: number) {
-		if (score === 1000) {
+		if (score >= 995) {
 			// Perfect - triumphant chord
 			this.playTone(523, 0.3); // C
-			setTimeout(() => this.playTone(659, 0.3), 100); // E
-			setTimeout(() => this.playTone(784, 0.5), 200); // G
+			setTimeout(() => this.playTone(659, 0.2), 100); // E
+			setTimeout(() => this.playTone(784, 0.75), 200); // G
 		} else if (score >= 900) {
 			// Excellent - happy chirp
 			this.playTone(659, 0.15);
@@ -99,3 +144,7 @@ export const playScore = (score: number) => sounds.playScore(score);
 export const playNewBest = () => sounds.playNewBest();
 export const playHover = () => sounds.playHover();
 export const setSoundsEnabled = (enabled: boolean) => sounds.setEnabled(enabled);
+export const playCountdownBeep = () => sounds.playCountdownBeep();
+export const playCountdownGo = () => sounds.playCountdownGo();
+export const startTension = () => sounds.startTension();
+export const stopTension = () => sounds.stopTension();
