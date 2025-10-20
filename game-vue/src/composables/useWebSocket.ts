@@ -8,9 +8,13 @@ export function useWebSocket() {
 	const connected = ref(false);
 	const error = ref<string | null>(null);
 
-	const reconnectInterval: number = 3000;
+	const reconnecWindowtInterval = ref<number | null>(null);
+	const activeTimer = ref<number | null>(null);
 	const reconnectTimer = ref<number | null>(null);
 	const isReconnecting = ref(false);
+	const RECONNECT_WINDOW_INTERVAL: number = 300000;
+	const ACTIVE_TIMER: number = 60000;
+	const RECONNECT_INTERVAL: number = 3000;
 
 	function connect() {
 		try {
@@ -20,13 +24,14 @@ export function useWebSocket() {
 				console.log('WebSocket connected');
 				connected.value = true;
 				error.value = null;
-				isReconnecting.value = false;
+				// isReconnecting.value = false;
+				stopReconnectCycle();
 			};
 
 			ws.value.onclose = () => {
 				console.log('WebSocket disconnected');
 				connected.value = false;
-				isReconnecting.value = true;
+				// isReconnecting.value = true;
 			};
 
 			ws.value.onerror = (event) => {
@@ -50,7 +55,11 @@ export function useWebSocket() {
 
 	function disconnect() {
 		if (ws.value) {
-			ws.value.close();
+			try {
+				ws.value.close();
+			} catch (err) {
+				console.error('Failed to disconnect gracefully:', err);
+			}
 			ws.value = null;
 		}
 	}
@@ -70,25 +79,6 @@ export function useWebSocket() {
 		});
 	}
 
-	// Reconnect
-	watch(connected, (isConnected) => {
-		if (!isConnected && reconnectTimer.value === null) {
-			isReconnecting.value = true;
-			reconnectTimer.value = window.setInterval(() => {
-				console.log('Attempting to reconnect...');
-				connect();
-			}, reconnectInterval);
-		}
-
-		// Clear timeout if reconnected
-		if (isConnected && reconnectTimer.value !== null) {
-			isReconnecting.value = false;
-			console.log('Reconnection succeeded!');
-			clearInterval(reconnectTimer.value);
-			reconnectTimer.value = null;
-		}
-	});
-
 	// Message handlers - to be set by components
 	const messageHandlers = new Map<string, (payload: any) => void>();
 
@@ -101,6 +91,105 @@ export function useWebSocket() {
 		if (handler && message.payload) {
 			handler(message.payload);
 		}
+	}
+
+	// Reconnect
+	watch(connected, (isConnected) => {
+		// if (!isConnected && reconnectTimer.value === null) {
+		//     // an 5min interval for an 1min timer for 3sec interval reconnections
+		//     reconnectInterval.value = window.setInterval(() => {
+		//         oneMinTimer.value = window.setTimeout(() => {
+
+		//             isReconnecting.value = true;
+		//             reconnectTimer.value = window.setInterval(() => {
+		//                 console.log('Attempting to reconnect...');
+		//                 connect();
+		//             }, RECONNECT_TIMER);
+
+		//         }, ACTIVE_TIMER);
+
+		//     }, RECONNECT_WINDOW_INTERVAL);
+		// }
+		// // Clear timeout if reconnected
+		// if (isConnected && reconnectTimer.value !== null) {
+		// 	isReconnecting.value = false;
+		// 	console.log('Reconnection succeeded!');
+		// 	clearInterval(reconnectTimer.value);
+		// 	reconnectTimer.value = null;
+		// }
+		if (!isConnected) {
+			// start the outer cycle that opens 1-minute reconnect windows every 5 minutes
+			startReconnectCycle();
+		} else {
+			// connected -> stop any running timers/intervals
+			stopReconnectCycle();
+			console.log('Reconnection succeeded!');
+		}
+	});
+
+	function startReconnectCycle() {
+		// already running outer cycle?
+		if (reconnecWindowtInterval.value !== null) return;
+
+		console.log('Starting reconnect cycle (every', RECONNECT_WINDOW_INTERVAL / 1000, 's)');
+		// start a reconnect window immediately
+		startReconnectWindow();
+
+		// then schedule repeating windows every OUTER_INTERVAL_MS
+		reconnecWindowtInterval.value = window.setInterval(() => {
+			startReconnectWindow();
+		}, RECONNECT_WINDOW_INTERVAL);
+	}
+
+	function startReconnectWindow() {
+		// already running window?
+		if (reconnectTimer.value !== null) return;
+
+		isReconnecting.value = true;
+		console.log('Starting reconnect attempts window for', RECONNECT_INTERVAL / 1000, 's');
+
+		// attempt immediately
+		connect();
+
+		// then attempt every RECONNECT_ATTEMPT_MS
+		reconnectTimer.value = window.setInterval(() => {
+			console.log('Attempting to reconnect...');
+			connect();
+		}, RECONNECT_INTERVAL);
+
+		// stop the attempts after RECONNECT_WINDOW_MS
+		activeTimer.value = window.setTimeout(() => {
+			console.log('Reconnect attempts window ended');
+			if (reconnectTimer.value !== null) {
+				clearInterval(reconnectTimer.value);
+				reconnectTimer.value = null;
+			}
+			if (activeTimer.value !== null) {
+				clearTimeout(activeTimer.value);
+				activeTimer.value = null;
+			}
+			// keep isReconnecting true until either outer cycle restarts window or a connection is established
+			isReconnecting.value = false;
+		}, ACTIVE_TIMER);
+	}
+
+	function stopReconnectCycle() {
+		// clear outer interval
+		if (reconnecWindowtInterval.value !== null) {
+			clearInterval(reconnecWindowtInterval.value);
+			reconnecWindowtInterval.value = null;
+		}
+		// clear running reconnect attempts
+		if (reconnectTimer.value !== null) {
+			clearInterval(reconnectTimer.value);
+			reconnectTimer.value = null;
+		}
+		// clear reconnect window timeout
+		if (activeTimer.value !== null) {
+			clearTimeout(activeTimer.value);
+			activeTimer.value = null;
+		}
+		isReconnecting.value = false;
 	}
 
 	// Cleanup on component unmount

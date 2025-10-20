@@ -18,11 +18,14 @@ const startTime = ref<number>(0)
 // FPS tracking
 const frameRate = ref<number>(0)             // displayed FPS
 const lastFrameTime = ref<number | null>(null)
+const maxFrameRate = ref<number>(0)
 const fpsSmoothingAlpha = 0.12
 // Game configuration
 const CYCLE_DURATION = 2000 // 2 seconds for full left-right cycle
 const showCountdown = ref(false)
 const elapsedTime = ref(0)
+let progress = ref<number>(0)
+let direction = ref<1 | -1>(1) // 1 = right, -1 = left
 
 // Shake intensity increases with time
 const shakeIntensity = computed(() => {
@@ -46,8 +49,9 @@ function startGame() {
 	// reset FPS tracking
 	lastFrameTime.value = null
 	frameRate.value = 0
-
+	maxFrameRate.value = 0
 	elapsedTime.value = 0
+	progress.value
 	playStart()
 	startTension()
 	animate()
@@ -64,14 +68,18 @@ function animate() {
 		if (delta > 0) {
 			const instantFps = 1000 / delta
 			// exponential moving average to smooth displayed FPS
-			frameRate.value = +(instantFps * fpsSmoothingAlpha + frameRate.value * (1 - fpsSmoothingAlpha)).toFixed(2)
+			frameRate.value = +(instantFps * fpsSmoothingAlpha + frameRate.value * (1 - fpsSmoothingAlpha)).toFixed(1)
+			maxFrameRate.value = Math.max(maxFrameRate.value, frameRate.value)
 		}
 	}
 	lastFrameTime.value = currentTime
 
 	// Calculate position using sine wave (smooth oscillation)
-	const progress = (elapsed % CYCLE_DURATION) / CYCLE_DURATION
-	const position = 50 + 50 * Math.sin(progress * Math.PI * 2)
+	progress.value = (elapsed % CYCLE_DURATION) / CYCLE_DURATION
+	const position = 50 + 50 * Math.sin(progress.value * Math.PI * 2)
+	// direction.value = position >= 50 ? 1 : -1
+	// direction.value = Math.sin(progress.value * Math.PI * 2) >= 0 ? 1 : -1
+	direction.value = Math.cos(progress.value * Math.PI * 2) >= 0 ? -1 : 1
 
 	gameStore.updatePosition(position)
 
@@ -88,6 +96,7 @@ async function stopGame() {
 	}
 	// stop FPS tracking
 	lastFrameTime.value = null
+	frameRate.value = 0
 	stopTension()
 	playStop()
 	gameStore.stopGame()
@@ -134,13 +143,13 @@ onUnmounted(() => {
 					   @complete="onCountdownComplete" />
 		<!-- Game Title -->
 		<div class="text-center mb-8">
-			<h1 class="text-7xl font-bold mb-2 text-silver press-start-2p">Quicky Finger</h1>
+			<h1 class="text-7xl font-bold mb-2 text-silver press-start-2p flicker">Quicky Finger</h1>
 			<p class="text-gray-400">Stop the slider as close to center as possible!</p>
 		</div>
 
 		<!-- FPS display -->
 		<div class="fps-counter text-sm text-gray-400 mt-2">
-			FPS: <span class="font-mono">{{ frameRate }}</span>
+			FPS: <span class="font-mono">{{ `${frameRate || '--'} / ${maxFrameRate || '--'}` }}</span>
 		</div>
 
 		<!-- Best Score Display -->
@@ -162,22 +171,31 @@ onUnmounted(() => {
 					<div class="absolute top-0 bottom-0 w-1"
 						 style="left: 50%;
 						 		transform: translateX(-50%);
-								background-color: var(--color-success);">
+								background-color: var(--color-gold);">
 					</div>
 
 					<!-- Moving slider indicator -->
-					<div class="slider absolute top-0 bottom-0 w-3 rounded transition-transform"
+					<div class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
+						 :class="direction == 1 ? 'right' : 'left'"
 						 :style="{
 							left: gameStore.sliderPosition + '%',
 							transform: 'translateX(-50%)',
 							willChange: 'transform',
-							backgroundColor: 'var(--color-indicator)'
+							backgroundColor: 'var(--color-success)'
 						}"></div>
 				</div>
 
 				<!-- Position indicator -->
 				<div class="text-center mt-2 text-gray-400 text-sm">
-					Position: {{ Math.round(gameStore.sliderPosition) }}%
+					Position: {{ gameStore.sliderPosition.toFixed(1) }}%
+				</div>
+				<!-- Progress indicator -->
+				<div class="text-center mt-2 text-gray-400 text-sm">
+					Progress: {{ progress.toFixed(2) }}
+				</div>
+				<!-- Direction indicator -->
+				<div class="text-center mt-2 text-gray-400 text-sm">
+					Direction: {{ direction.toFixed(2) }}
 				</div>
 			</div>
 
@@ -187,13 +205,13 @@ onUnmounted(() => {
 				<button v-if="!gameStore.isPlaying && !gameStore.hasScore"
 						@click="initiateStart"
 						@mouseenter="playHover()"
-						class="btn btn-primary text-4xl px-12 py-4 press-start-2p pulse-btn">Start Game</button>
+						class="btn btn-primary start-btn press-start-2p pulse-btn">Start Game</button>
 
 				<!-- Stop Button -->
 				<button v-if="gameStore.isPlaying"
 						@click="stopGame"
 						@mouseenter="playHover()"
-						class="btn btn-danger text-4xl px-16 py-6 animate-pulse stop-button-shake press-start-2p"
+						class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
 						:style="{
 							'--shake-intensity': `${shakeIntensity * 0.5}px`
 						}">
@@ -214,8 +232,9 @@ onUnmounted(() => {
 				</div>
 
 				<div class="text-gray-400 mb-6">
-					<p>Final Position: {{ Math.round(gameStore.sliderPosition) }}%</p>
-					<p>Distance from Center: {{ Math.abs(Math.round(gameStore.sliderPosition - 50)) }}%</p>
+					<p>Final Position: {{ gameStore.sliderPosition.toFixed(3) }}%</p>
+					<p>Distance from Center: {{ Math.abs(gameStore.sliderPosition - 50).toFixed(3) }}%</p>
+					<p>Final Progress: {{ progress.toFixed(3) }}%</p>
 				</div>
 
 				<button @click="playAgain"
@@ -241,7 +260,7 @@ onUnmounted(() => {
 
 .text-silver {
 	color: var(--color-silver);
-	text-shadow: 0 0 40px var(--color-silver), 0 0 15px var(--color-silver);
+	/* text-shadow: 0 0 40px var(--color-silver), 0 0 15px var(--color-silver); */
 }
 
 .text-rating {
@@ -261,6 +280,19 @@ onUnmounted(() => {
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between;
+}
+
+.slider.left {
+	box-shadow: -8px 0px 25px 5px var(--color-success);
+}
+
+.slider.right {
+	box-shadow: 8px 0px 25px 5px var(--color-success);
+}
+
+.start-btn {
+	align-self: center !important;
+	height: 6rem !important;
 }
 
 .fps-counter {
@@ -442,5 +474,37 @@ onUnmounted(() => {
 		transform: translate(calc(var(--shake-intensity) * 0.5),
 				0) scale(0.85);
 	}
+}
+
+@keyframes flicker {
+
+	0%,
+	19%,
+	21%,
+	23%,
+	25%,
+	54%,
+	56%,
+	100% {
+
+		text-shadow:
+			-2px -2px 2px var(--color-silver),
+			2px 2px 2px var(--color-silver),
+			0 0 8px var(--color-silver), 0 0 0 var(--color-silver),
+			0 0 16px var(--color-silver), 0 0 2px var(--color-silver),
+			0 0 28px var(--color-silver), 0 0 5px var(--color-silver);
+	}
+
+	20%,
+	24%,
+	55% {
+		text-shadow: none;
+		box-shadow: none;
+	}
+}
+
+.flicker {
+	/* text-shadow: 0 0 40px var(--color-silver), 0 0 15px var(--color-silver); */
+	animation: flicker 2.5s infinite alternate;
 }
 </style>

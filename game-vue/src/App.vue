@@ -81,8 +81,11 @@ function submitScoreToServer(score: number) {
     <!-- Connection status -->
     <div class="fixed top-4 right-4 z-50">
       <div class="px-4 py-2 rounded-full text-sm font-semibold"
-           :class="connected ? 'bg-opacity-20 success' : ' bg-opacity-20 danger'">
-        {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }}
+           :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'">
+        <span v-if="connected">🟢</span>
+        <span v-if="isReconnecting"><span :class="isReconnecting ? 'blink' : ''"></span></span>
+        <span v-if="!connected && !isReconnecting">🔴</span>
+        <!-- {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }} -->
       </div>
     </div>
 
@@ -128,5 +131,35 @@ function submitScoreToServer(score: number) {
 .danger {
   color: var(--color-danger);
   background-color: var(--color-danger-02);
+}
+
+.blink {
+  margin: 0 auto;
+  margin: 0 auto;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  z-index: 10;
+  opacity: 1;
+  vertical-align: middle;
+  background-color: #F00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+  animation: blinkRed 0.5s infinite;
+}
+
+@keyframes blinkRed {
+  from {
+    background-color: #F00;
+  }
+
+  50% {
+    background-color: #A00;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;
+  }
+
+  to {
+    background-color: #F00;
+  }
 }
 </style>
