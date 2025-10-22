@@ -5,6 +5,7 @@ import { useGameStore } from '../stores/gameStore'
 import { getScoreRating } from '../utils/scoring'
 import { celebrateScore, celebrateNewBest } from '../utils/confetti'
 import { playStart, playStop, playScore, playNewBest, playHover, startTension, stopTension, cleanupSounds } from '../utils/sounds'
+import { playEffects, vibrateStop } from '../utils/effects'
 import GameCountdown from './GameCountdown.vue'
 // Props - accept WebSocket submit function
 const props = defineProps<{
@@ -99,10 +100,12 @@ async function stopGame() {
 	frameRate.value = 0
 	stopTension()
 	playStop()
+	vibrateStop()
 	gameStore.stopGame()
 
 	// Celebrate the score and submit it via WebSocket
 	if (gameStore.currentScore !== null) {
+		playEffects(gameStore.currentScore)
 		playScore(gameStore.currentScore)
 		celebrateScore(gameStore.currentScore)
 		// Extra celebration for new personal best
