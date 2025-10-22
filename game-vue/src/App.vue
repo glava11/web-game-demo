@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
+import Leaderboard from './components/Leaderboard.vue'
+import MemoryMonitor from './components/MemoryMonitor.vue'
 import NicknameInput from './components/NicknameInput.vue'
 import SliderGame from './components/SliderGame.vue'
-import Leaderboard from './components/Leaderboard.vue'
+import { useGameStore } from './stores/gameStore'
 import { useLeaderboardStore } from './stores/leaderboardStore'
 import { useWebSocket } from './composables/useWebSocket'
 import type { Player } from './types/game.types'
-import { useGameStore } from './stores/gameStore'
 
 const leaderboardStore = useLeaderboardStore()
 const { connected, connect, submitScore, onMessage, isReconnecting } = useWebSocket()
@@ -115,6 +116,9 @@ function submitScoreToServer(score: number) {
       <!-- Leaderboard -->
       <Leaderboard />
     </div>
+
+    <!-- Memory Monitor (dev only) -->
+    <MemoryMonitor />
   </div>
 </template>
 
