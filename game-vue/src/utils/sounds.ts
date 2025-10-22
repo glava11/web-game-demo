@@ -6,6 +6,7 @@
 class SoundManager {
 	private audioContext: AudioContext | null = null;
 	private enabled = true;
+	private activeOscillators: OscillatorNode[] = [];
 
 	private getContext(): AudioContext {
 		if (!this.audioContext) {
@@ -37,8 +38,36 @@ class SoundManager {
 
 			oscillator.start(ctx.currentTime);
 			oscillator.stop(ctx.currentTime + duration);
+
+			this.activeOscillators.push(oscillator);
+			oscillator.onended = () => {
+				const index = this.activeOscillators.indexOf(oscillator);
+				if (index > -1) {
+					this.activeOscillators.splice(index, 1);
+				}
+				oscillator.disconnect();
+				gainNode.disconnect();
+			};
 		} catch (error) {
 			console.warn('Sound playback failed:', error);
+		}
+	}
+
+	cleanup() {
+		this.stopTension();
+		this.activeOscillators.forEach((osc) => {
+			try {
+				osc.stop();
+				osc.disconnect();
+			} catch (error) {
+				// already stopped
+				// console.warn('Error stopping oscillator:', error);
+			}
+		});
+		this.activeOscillators = [];
+		if (this.audioContext) {
+			this.audioContext.close();
+			this.audioContext = null;
 		}
 	}
 
@@ -148,3 +177,4 @@ export const playCountdownBeep = () => sounds.playCountdownBeep();
 export const playCountdownGo = () => sounds.playCountdownGo();
 export const startTension = () => sounds.startTension();
 export const stopTension = () => sounds.stopTension();
+export const cleanupSounds = () => sounds.cleanup();

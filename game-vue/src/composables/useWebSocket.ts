@@ -56,12 +56,19 @@ export function useWebSocket() {
 	function disconnect() {
 		if (ws.value) {
 			try {
+				ws.value.onopen = null;
+				ws.value.onclose = null;
+				ws.value.onerror = null;
+				ws.value.onmessage = null;
+
 				ws.value.close();
 			} catch (err) {
 				console.error('Failed to disconnect gracefully:', err);
 			}
 			ws.value = null;
 		}
+		messageHandlers.clear();
+		connected.value = false;
 	}
 
 	function send(message: GameMessage) {
@@ -95,28 +102,6 @@ export function useWebSocket() {
 
 	// Reconnect
 	watch(connected, (isConnected) => {
-		// if (!isConnected && reconnectTimer.value === null) {
-		//     // an 5min interval for an 1min timer for 3sec interval reconnections
-		//     reconnectInterval.value = window.setInterval(() => {
-		//         oneMinTimer.value = window.setTimeout(() => {
-
-		//             isReconnecting.value = true;
-		//             reconnectTimer.value = window.setInterval(() => {
-		//                 console.log('Attempting to reconnect...');
-		//                 connect();
-		//             }, RECONNECT_TIMER);
-
-		//         }, ACTIVE_TIMER);
-
-		//     }, RECONNECT_WINDOW_INTERVAL);
-		// }
-		// // Clear timeout if reconnected
-		// if (isConnected && reconnectTimer.value !== null) {
-		// 	isReconnecting.value = false;
-		// 	console.log('Reconnection succeeded!');
-		// 	clearInterval(reconnectTimer.value);
-		// 	reconnectTimer.value = null;
-		// }
 		if (!isConnected) {
 			// start the outer cycle that opens 1-minute reconnect windows every 5 minutes
 			startReconnectCycle();
@@ -195,9 +180,7 @@ export function useWebSocket() {
 	// Cleanup on component unmount
 	onUnmounted(() => {
 		disconnect();
-		if (reconnectTimer.value !== null) {
-			clearInterval(reconnectTimer.value);
-		}
+		stopReconnectCycle();
 	});
 
 	return {

@@ -4,7 +4,7 @@ import { useGameStore } from '../stores/gameStore'
 // import { useLeaderboardStore } from '../stores/leaderboardStore'
 import { getScoreRating } from '../utils/scoring'
 import { celebrateScore, celebrateNewBest } from '../utils/confetti'
-import { playStart, playStop, playScore, playNewBest, playHover, startTension, stopTension } from '../utils/sounds'
+import { playStart, playStop, playScore, playNewBest, playHover, startTension, stopTension, cleanupSounds } from '../utils/sounds'
 import GameCountdown from './GameCountdown.vue'
 // Props - accept WebSocket submit function
 const props = defineProps<{
@@ -62,18 +62,6 @@ function animate() {
 	const elapsed = currentTime - startTime.value
 	elapsedTime.value = elapsed
 
-	// FPS
-	if (lastFrameTime.value !== null) {
-		const delta = currentTime - lastFrameTime.value
-		if (delta > 0) {
-			const instantFps = 1000 / delta
-			// exponential moving average to smooth displayed FPS
-			frameRate.value = +(instantFps * fpsSmoothingAlpha + frameRate.value * (1 - fpsSmoothingAlpha)).toFixed(1)
-			maxFrameRate.value = Math.max(maxFrameRate.value, frameRate.value)
-		}
-	}
-	lastFrameTime.value = currentTime
-
 	// Calculate position using sine wave (smooth oscillation)
 	progress.value = (elapsed % CYCLE_DURATION) / CYCLE_DURATION
 	const position = 50 + 50 * Math.sin(progress.value * Math.PI * 2)
@@ -87,6 +75,18 @@ function animate() {
 	if (gameStore.isPlaying) {
 		animationFrameId.value = requestAnimationFrame(animate)
 	}
+
+	// FPS
+	if (lastFrameTime.value !== null) {
+		const delta = currentTime - lastFrameTime.value
+		if (delta > 0) {
+			const instantFps = 1000 / delta
+			// exponential moving average to smooth displayed FPS
+			frameRate.value = +(instantFps * fpsSmoothingAlpha + frameRate.value * (1 - fpsSmoothingAlpha)).toFixed(1)
+			maxFrameRate.value = Math.max(maxFrameRate.value, frameRate.value)
+		}
+	}
+	lastFrameTime.value = currentTime
 }
 
 async function stopGame() {
@@ -133,6 +133,7 @@ onUnmounted(() => {
 		cancelAnimationFrame(animationFrameId.value)
 	}
 	stopTension()
+	cleanupSounds()
 })
 </script>
 

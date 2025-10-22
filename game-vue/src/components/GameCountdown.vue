@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { playCountdownBeep, playCountdownGo } from '../utils/sounds'
 
 const emit = defineEmits<{
@@ -8,9 +8,16 @@ const emit = defineEmits<{
 
 const currentNumber = ref<number | string>(3)
 const show = ref(true)
+const timeouts: number[] = []
 
 onMounted(() => {
   startCountdown()
+})
+
+onUnmounted(() => {
+  // Clear any pending timeouts
+  timeouts.forEach((to) => clearTimeout(to))
+  timeouts.length = 0
 })
 
 function startCountdown() {
@@ -18,28 +25,28 @@ function startCountdown() {
   currentNumber.value = 3
   playCountdownBeep()
 
-  setTimeout(() => {
+  timeouts.push(window.setTimeout(() => {
     // 2
     currentNumber.value = 2
     playCountdownBeep()
 
-    setTimeout(() => {
+    timeouts.push(window.setTimeout(() => {
       // 1
       currentNumber.value = 1
       playCountdownBeep()
 
-      setTimeout(() => {
+      timeouts.push(window.setTimeout(() => {
         // GO!
         currentNumber.value = 'GO!'
         playCountdownGo()
 
-        setTimeout(() => {
+        timeouts.push(window.setTimeout(() => {
           show.value = false
           emit('complete')
-        }, 350)
-      }, 700)
-    }, 700)
-  }, 700)
+        }, 350))
+      }, 700))
+    }, 700))
+  }, 700))
 }
 </script>
 
