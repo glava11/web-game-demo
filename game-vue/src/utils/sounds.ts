@@ -1,24 +1,43 @@
 /**
  * Simple sound effects using Web Audio API
- * No external files needed - generates tones programmatically
  */
 
 class SoundManager {
   private audioContext: AudioContext | null = null;
   private enabled = true;
   private activeOscillators: OscillatorNode[] = [];
+  private activeTimeouts: number[] = [];
 
-  private getContext(): AudioContext {
+  private getContext(): AudioContext | null {
     if (!this.audioContext) {
-      this.audioContext = new (window.AudioContext ||
-        (window as typeof window & { webkitAudioContext: typeof AudioContext })
-          .webkitAudioContext)();
+      const AudioCtx =
+        window.AudioContext ||
+        (window as typeof window & { webkitAudioContext?: typeof AudioContext })
+          .webkitAudioContext;
+      if (!AudioCtx) {
+        this.enabled = false;
+        console.warn("Web Audio API is not supported in this browser.");
+        return null;
+      }
+      this.audioContext = new AudioCtx();
     }
     return this.audioContext;
   }
 
   setEnabled(enabled: boolean) {
     this.enabled = enabled;
+  }
+
+  private trackTimeout(fn: () => void, delay: number): number {
+    const id = window.setTimeout(() => {
+      fn();
+      // Remove from tracking after execution
+      const index = this.activeTimeouts.indexOf(id);
+      if (index > -1) this.activeTimeouts.splice(index, 1);
+    }, delay);
+
+    this.activeTimeouts.push(id);
+    return id;
   }
 
   private playTone(
@@ -30,6 +49,7 @@ class SoundManager {
 
     try {
       const ctx = this.getContext();
+      if (!ctx) return; // no audio support
       const oscillator = ctx.createOscillator();
       const gainNode = ctx.createGain();
 
@@ -64,6 +84,10 @@ class SoundManager {
 
   cleanup() {
     this.stopTension();
+
+    this.activeTimeouts.forEach((id) => clearTimeout(id));
+    this.activeTimeouts = [];
+
     this.activeOscillators.forEach((osc) => {
       try {
         osc.stop();
@@ -74,44 +98,32 @@ class SoundManager {
       }
     });
     this.activeOscillators = [];
+
     if (this.audioContext) {
       this.audioContext.close();
       this.audioContext = null;
     }
   }
 
-  // Countdown beeps - ascending tension
+  // Countdown beeps
   playCountdownBeep() {
     this.playTone(440, 0.15, "square");
   }
 
-  // GO! - exciting start
+  // GO! beep
   playCountdownGo() {
-    // this.playTone(880, 0.2, 'square');
-    // setTimeout(() => this.playTone(1100, 0.25, 'square'), 100);
     this.playTone(444, 0.55, "square");
   }
 
-  // Tension loop - plays while slider moves
+  // Tension loop
   private tensionInterval: number | null = null;
   private tensionFrequency = 220;
 
   startTension() {
-    this.stopTension(); // Clear any existing
+    this.stopTension();
 
     this.tensionInterval = window.setInterval(() => {
-      // // Gradually increase frequency for building tension
-      // this.tensionFrequency = Math.min(this.tensionFrequency + 5, 440);
-      // this.playTone(this.tensionFrequency, 0.05, 'sawtooth');
-
-      // // Option 1: Heartbeat style
-      // this.playTone(100, 0.1, 'sine');
-      // setTimeout(() => this.playTone(100, 0.1, 'sine'), 100);
-
-      // // Option 2: Ticking clock
-      // this.playTone(1000, 0.02, 'square');
-
-      // Option 3: Rising siren
+      // Rising siren
       this.tensionFrequency = Math.min(this.tensionFrequency + 10, 880);
       this.playTone(this.tensionFrequency, 0.05, "sawtooth");
     }, 500) as number;
@@ -121,14 +133,14 @@ class SoundManager {
     if (this.tensionInterval) {
       clearInterval(this.tensionInterval);
       this.tensionInterval = null;
-      this.tensionFrequency = 220; // Reset
+      this.tensionFrequency = 220;
     }
   }
 
   // Game start - ascending tone
   playStart() {
     this.playTone(440, 0.1);
-    setTimeout(() => this.playTone(554, 0.15), 100);
+    this.trackTimeout(() => this.playTone(554, 0.15), 100);
   }
 
   // Stop button clicked - sharp beep
@@ -136,26 +148,26 @@ class SoundManager {
     this.playTone(880, 0.05, "square");
   }
 
-  // Score reveal - based on quality
+  // Score reveal
   playScore(score: number) {
     if (score >= 995) {
       // Perfect - triumphant chord
       this.playTone(523, 0.3); // C
-      setTimeout(() => this.playTone(659, 0.2), 100); // E
-      setTimeout(() => this.playTone(784, 0.75), 200); // G
+      this.trackTimeout(() => this.playTone(659, 0.2), 100); // E
+      this.trackTimeout(() => this.playTone(784, 0.75), 200); // G
     } else if (score >= 900) {
       // Excellent - happy chirp
       this.playTone(659, 0.15);
-      setTimeout(() => this.playTone(784, 0.15), 80);
-      setTimeout(() => this.playTone(988, 0.2), 160);
+      this.trackTimeout(() => this.playTone(784, 0.15), 80);
+      this.trackTimeout(() => this.playTone(988, 0.2), 160);
     } else if (score >= 700) {
       // Good - pleasant tone
       this.playTone(523, 0.2);
-      setTimeout(() => this.playTone(659, 0.2), 100);
+      this.trackTimeout(() => this.playTone(659, 0.2), 100);
     } else {
       // Try again - gentle nudge
       this.playTone(392, 0.15);
-      setTimeout(() => this.playTone(330, 0.2), 100);
+      this.trackTimeout(() => this.playTone(330, 0.2), 100);
     }
   }
 
@@ -163,7 +175,7 @@ class SoundManager {
   playNewBest() {
     const notes = [523, 659, 784, 1047]; // C E G C
     notes.forEach((freq, i) => {
-      setTimeout(() => this.playTone(freq, 0.15), i * 80);
+      this.trackTimeout(() => this.playTone(freq, 0.15), i * 80);
     });
   }
 
