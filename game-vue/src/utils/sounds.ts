@@ -11,7 +11,8 @@ class SoundManager {
   private getContext(): AudioContext {
     if (!this.audioContext) {
       this.audioContext = new (window.AudioContext ||
-        (window as any).webkitAudioContext)();
+        (window as typeof window & { webkitAudioContext: typeof AudioContext })
+          .webkitAudioContext)();
     }
     return this.audioContext;
   }
@@ -69,7 +70,7 @@ class SoundManager {
         osc.disconnect();
       } catch (error) {
         // already stopped
-        // console.warn('Error stopping oscillator:', error);
+        console.warn("Error stopping oscillator:", error);
       }
     });
     this.activeOscillators = [];
@@ -113,7 +114,7 @@ class SoundManager {
       // Option 3: Rising siren
       this.tensionFrequency = Math.min(this.tensionFrequency + 10, 880);
       this.playTone(this.tensionFrequency, 0.05, "sawtooth");
-    }, 500) as any;
+    }, 500) as number;
   }
 
   stopTension() {

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
-import Leaderboard from "./Leaderboard.vue";
+import Leaderboard from "./LeaderBoard.vue";
 import { useLeaderboardStore } from "../stores/leaderboardStore";
 import type { Player } from "../types/game.types";
 

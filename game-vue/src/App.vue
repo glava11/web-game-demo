@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from "vue";
-import Leaderboard from "./components/Leaderboard.vue";
+import Leaderboard from "./components/LeaderBoard.vue";
 import MemoryMonitor from "./components/MemoryMonitor.vue";
 import NicknameInput from "./components/NicknameInput.vue";
 import SliderGame from "./components/SliderGame.vue";

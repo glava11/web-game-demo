@@ -87,9 +87,9 @@ export function useWebSocket() {
   }
 
   // Message handlers - to be set by components
-  const messageHandlers = new Map<string, (payload: any) => void>();
+  const messageHandlers = new Map<string, (payload: unknown) => void>();
 
-  function onMessage(type: string, handler: (payload: any) => void) {
+  function onMessage(type: string, handler: (payload: unknown) => void) {
     messageHandlers.set(type, handler);
   }
 

@@ -17,7 +17,7 @@ export default defineConfig({
       compress: {
         drop_console: true, // Remove console.logs in production
         drop_debugger: true,
-        pure_funcs: ["console.log", "console.info", "console.warning"], // Remove specific console calls
+        pure_funcs: ["console.log", "console.info", "console.warn"], // Remove specific console calls
       },
     },
     // Code splitting

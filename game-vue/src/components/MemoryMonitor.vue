@@ -30,15 +30,18 @@ function stopMonitoring() {
 }
 
 function updateMemory() {
-  if ("memory" in performance) {
-    const memory = (performance as any).memory;
-    memoryUsage.value = Math.round(memory.usedJSHeapSize / 1024 / 1024);
+  const perf = performance as Performance & {
+    memory?: { usedJSHeapSize: number };
+  };
+  if (perf.memory) {
+    memoryUsage.value = Math.round(perf.memory.usedJSHeapSize / 1024 / 1024);
   }
 }
 
 function forceGC() {
-  if ("gc" in window) {
-    (window as any).gc();
+  const win = window as Window & { gc?: () => void };
+  if (typeof win.gc === "function") {
+    win.gc();
     console.log("🗑️ Garbage collection forced");
   } else {
     console.warn("GC not available (run Chrome with --expose-gc flag)");
