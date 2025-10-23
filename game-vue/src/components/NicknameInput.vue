@@ -40,23 +40,22 @@ function handleSubmit(): void {
     <div class="bg-gray-800 rounded-xl p-8 shadow-2xl">
       <h2 class="text-3xl font-bold mb-6 text-center">Enter Your Nickname</h2>
 
-      <form class="space-y-4"
-            @submit.prevent="handleSubmit">
+      <form class="space-y-4" @submit.prevent="handleSubmit">
         <div>
-          <input v-model="nickname"
-                 type="text"
-                 placeholder="Your nickname..."
-                 maxlength="20"
-                 class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-400"
-                 autofocus />
-          <p v-if="error"
-             class="text-red-400 text-sm mt-2">
+          <input
+            v-model="nickname"
+            type="text"
+            placeholder="Your nickname..."
+            maxlength="20"
+            class="w-full px-4 py-3 bg-gray-700 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-primary placeholder-gray-400"
+            autofocus
+          />
+          <p v-if="error" class="text-red-400 text-sm mt-2">
             {{ error }}
           </p>
         </div>
 
-        <button type="submit"
-                class="btn btn-primary w-full text-xl py-4">
+        <button type="submit" class="btn btn-primary w-full text-xl py-4">
           Continue
         </button>
       </form>

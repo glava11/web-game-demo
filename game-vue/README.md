@@ -2,9 +2,9 @@
 
 A high-performance, real-time multiplayer game built with modern web technologies. Stop the slider as close to center as possible and compete on a global leaderboard!
 
-![Quicky Finger Demo](./docs/demo.gif)
+![Quicky Finger Demo](./assets/qf-demo.gif)
 
-**Live Demo:** [https://quick-finger.vercel.app](https://quick-finger.vercel.app)
+**Live Demo:** [Quicky Finger](https://quicky-finger.drazenorsolic.xyz/)
 
 ---
 
@@ -12,9 +12,8 @@ A high-performance, real-time multiplayer game built with modern web technologie
 
 - **Instant Play** - No signup required, jump right in
 - **Real-Time Multiplayer** - See scores update live across all players
-- **Smart UX** - Only prompts for nickname if you achieve a top score
 - **60fps Animation** - Smooth gameplay using requestAnimationFrame
-- **Visual Feedback** - Confetti celebrations for great scores
+- **Visual and audio Feedback** - tension and celebrations for great scores
 - **Responsive Design** - Works on desktop, tablet, and mobile
 - **Type-Safe** - Full TypeScript implementation
 - **Tested** - 60+ tests covering all functionality
@@ -25,33 +24,33 @@ A high-performance, real-time multiplayer game built with modern web technologie
 
 ```
 ┌─────────────────────────────────────────┐
-│         Vue 3 Frontend (Vite)            │
+│         Vue 3 Frontend (Vite)           │
 │  ┌────────────────────────────────────┐ │
-│  │  Components (Composition API)       │ │
-│  │  - SliderGame                       │ │
-│  │  - Leaderboard                      │ │
-│  │  - NicknameInput                    │ │
+│  │  Components (Composition API)      │ │
+│  │  - SliderGame                      │ │
+│  │  - Leaderboard                     │ │
+│  │  - NicknameInput                   │ │
 │  └────────────────────────────────────┘ │
 │  ┌────────────────────────────────────┐ │
-│  │  State Management (Pinia)           │ │
-│  │  - gameStore                        │ │
-│  │  - leaderboardStore                 │ │
+│  │  State Management (Pinia)          │ │
+│  │  - gameStore                       │ │
+│  │  - leaderboardStore                │ │
 │  └────────────────────────────────────┘ │
 │  ┌────────────────────────────────────┐ │
-│  │  Composables                        │ │
-│  │  - useWebSocket                     │ │
-│  │  - useGameLoop                      │ │
+│  │  Composables                       │ │
+│  │  - useWebSocket                    │ │
+│  │  - useGameLoop                     │ │
 │  └────────────────────────────────────┘ │
 └─────────────┬───────────────────────────┘
               │ WebSocket (wss://)
               ▼
 ┌─────────────────────────────────────────┐
-│      Node.js WebSocket Server            │
+│      Node.js WebSocket Server           │
 │  ┌────────────────────────────────────┐ │
-│  │  - Real-time score broadcasting     │ │
-│  │  - Input validation & sanitization  │ │
-│  │  - Rate limiting (10 req/10s)       │ │
-│  │  - In-memory leaderboard            │ │
+│  │  - Real-time score broadcasting    │ │
+│  │  - Input validation & sanitization │ │
+│  │  - Rate limiting (10 req/10s)      │ │
+│  │  - In-memory leaderboard           │ │
 │  └────────────────────────────────────┘ │
 └─────────────────────────────────────────┘
 ```
@@ -69,7 +68,7 @@ A high-performance, real-time multiplayer game built with modern web technologie
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/quicky-finger.git
+git clone https://github.com/glava11/quicky-finger.git
 cd quicky-finger
 
 # Install frontend dependencies
@@ -128,18 +127,13 @@ npm test performance
 
 ### Frontend ()
 
-```bash
-cd game-vue
-...
-
-```
+1. set env variable `VITE_WS_URL` (for local: "ws://localhost:8080")
 
 ### Backend ()
 
-1. Push code to GitHub
-2. Go to [xy](https://xy)
-3. Deploy from GitHub
-4. Set environment variable: `PORT=8080`
+1. Set environment variable: `PORT=8080`
+2. Push code to main on GitHub
+3. Go check on [heroku](https://heroku.com)
 
 See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 
@@ -165,9 +159,8 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 
 ### DevOps
 
-- **Vercel** - Frontend hosting
-- **Railway** - Backend hosting
-- **GitHub Actions** - CI/CD
+- **Web Hosting** - Frontend hosting
+- **Heroku** - Backend hosting
 
 ---
 
@@ -211,15 +204,11 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 - [ ] Complete the framework trilogy
 - [ ] Document comparison insights
 
-### Phase 5: Polish
+### Phase 5: Extending
 
-- [x] Confetti celebrations
-- [x] Sound effects
 - [ ] Difficulty levels
-- [ ] Dark/light theme
-- [ ] Mobile optimization
-- [ ] PWA support
 - [ ] server saving the leaderboards data (and loading if any, on boot up)
+- [ ] integrating as microfrontends
 
 ---
 
@@ -255,17 +244,14 @@ MIT License - feel free to use this code for learning!
 
 **Drazen**
 
-- Portfolio: [yoursite.com](https://yoursite.com)
-- LinkedIn: [linkedin.com/in/yourprofile](https://linkedin.com/in/yourprofile)
-- GitHub: [@yourusername](https://github.com/yourusername)
+- Web: [drazenorsolic.xyz](https://drazenorsolic.xyz)
 
 ---
 
 ## Acknowledgments
 
-- Built as part of interview preparation
+- Built as experimentation project
 - Inspired by classic arcade games
-- Thanks to the Vue, React, and Angular communities
 
 ---
 

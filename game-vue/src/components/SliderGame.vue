@@ -153,13 +153,14 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="game-container max-w-2xl w-full mx-auto">
+  <div class="game-container max-w-sm sm:max-w-4xl w-full mx-auto">
     <!-- Countdown Overlay -->
-    <GameCountdown v-if="showCountdown"
-                   @complete="onCountdownComplete" />
+    <GameCountdown v-if="showCountdown" @complete="onCountdownComplete" />
     <!-- Game Title -->
     <div class="text-center mb-8">
-      <h1 class="text-7xl font-bold mb-2 text-silver press-start-2p flicker">
+      <h1
+        class="text-6xl md:text-7xl xl:text-9xl px-1 font-bold mb-2 text-silver press-start-2p flicker"
+      >
         Quicky Finger
       </h1>
       <p class="text-gray-400">
@@ -168,16 +169,15 @@ onUnmounted(() => {
     </div>
 
     <!-- FPS display -->
-    <div class="fps-counter text-sm text-gray-400 mt-2">
+    <div class="fps-counter fixed top-4 left-4 text-sm text-gray-400 mt-2">
       FPS:
       <span class="font-mono">{{
         `${frameRate || "--"} / ${maxFrameRate || "--"}`
-        }}</span>
+      }}</span>
     </div>
 
     <!-- Best Score Display -->
-    <div v-if="gameStore.bestScore > 0"
-         class="text-center mb-4">
+    <div v-if="gameStore.bestScore > 0" class="text-center mb-4">
       <p class="text-sm text-gray-400">
         Best Score:
         <span class="text-yellow-400 font-bold">{{ gameStore.bestScore }}</span>
@@ -185,29 +185,34 @@ onUnmounted(() => {
     </div>
 
     <!-- Game Area -->
-    <div class="rounded-xl p-8 shadow-2xl game-area">
+    <div class="rounded-xl p-2 md:p-8 shadow-2xl game-area">
       <!-- Slider Track (only shown when playing) -->
-      <div v-if="gameStore.isPlaying"
-           class="mb-8">
-        <div class="relative h-40 rounded-lg overflow-hidden"
-             style="background-color: var(--color-bg-playground)">
+      <div v-if="gameStore.isPlaying" class="mb-8">
+        <div
+          class="relative h-40 rounded-lg overflow-hidden max-w-full"
+          style="background-color: var(--color-bg-playground)"
+        >
           <!-- Target line (center) -->
-          <div class="absolute top-0 bottom-0 w-1"
-               style="
+          <div
+            class="absolute top-0 bottom-0 w-1"
+            style="
               left: 50%;
               transform: translateX(-50%);
               background-color: var(--color-gold);
-            "></div>
+            "
+          ></div>
 
           <!-- Moving slider indicator -->
-          <div class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
-               :class="direction == 1 ? 'right' : 'left'"
-               :style="{
-                left: gameStore.sliderPosition + '%',
-                transform: 'translateX(-50%)',
-                willChange: 'transform',
-                backgroundColor: 'var(--color-success)',
-              }"></div>
+          <div
+            class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
+            :class="direction == 1 ? 'right' : 'left'"
+            :style="{
+              left: gameStore.sliderPosition + '%',
+              transform: 'translateX(-50%)',
+              willChange: 'transform',
+              backgroundColor: 'var(--color-success)',
+            }"
+          ></div>
         </div>
 
         <!-- Position indicator -->
@@ -219,28 +224,31 @@ onUnmounted(() => {
       <!-- Control Buttons -->
       <div class="flex justify-center gap-4 h-full">
         <!-- Start Button -->
-        <button v-if="!gameStore.isPlaying && !gameStore.hasScore"
-                class="btn btn-primary start-btn press-start-2p pulse-btn"
-                @click="initiateStart"
-                @mouseenter="playHover()">
+        <button
+          v-if="!gameStore.isPlaying && !gameStore.hasScore"
+          class="btn btn-primary start-btn press-start-2p pulse-btn"
+          @click="initiateStart"
+          @mouseenter="playHover()"
+        >
           Start Game
         </button>
 
         <!-- Stop Button -->
-        <button v-if="gameStore.isPlaying"
-                class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
-                :style="{
-                  '--shake-intensity': `${shakeIntensity * 0.5}px`,
-                }"
-                @click="stopGame"
-                @mouseenter="playHover()">
+        <button
+          v-if="gameStore.isPlaying"
+          class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
+          :style="{
+            '--shake-intensity': `${shakeIntensity * 0.5}px`,
+          }"
+          @click="stopGame"
+          @mouseenter="playHover()"
+        >
           STOP!
         </button>
       </div>
 
       <!-- Score Display -->
-      <div v-if="gameStore.hasScore"
-           class="text-center mt-8">
+      <div v-if="gameStore.hasScore" class="text-center mt-0 sm:mt-8">
         <div class="mb-6">
           <p class="text-8xl font-bold text-gold mb-8 press-start-2p pulsate">
             {{ gameStore.currentScore }}
@@ -258,9 +266,11 @@ onUnmounted(() => {
           </p>
         </div>
 
-        <button class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
-                @click="playAgain"
-                @mouseenter="playHover()">
+        <button
+          class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
+          @click="playAgain"
+          @mouseenter="playHover()"
+        >
           Play Again
         </button>
       </div>
@@ -320,9 +330,6 @@ onUnmounted(() => {
 }
 
 .fps-counter {
-  position: absolute;
-  top: 0.25rem;
-  left: 1rem;
   font-size: 1.1rem;
 
   span {
@@ -380,7 +387,6 @@ onUnmounted(() => {
 }
 
 @keyframes buttonShake {
-
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -401,7 +407,6 @@ onUnmounted(() => {
 }
 
 @keyframes flicker {
-
   0%,
   19%,
   21%,

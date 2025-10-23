@@ -88,7 +88,7 @@ function submitScoreToServer(score: number) {
     </div>
 
     <!-- Main content -->
-    <div class="container mx-auto px-4 py-8 space-y-8">
+    <div class="container mx-auto px-0 py-20 md:px-4 md:py-8 md:space-y-8">
       <!-- Nickname prompt modal (overlay) -->
       <div v-if="showNicknamePrompt"
            class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
@@ -121,10 +121,16 @@ function submitScoreToServer(score: number) {
 
       <!-- Leaderboard -->
       <Leaderboard />
+
+      <footer class="flex flex-col items-center justify-center">
+        <span>© 2025 <a href="https://drazenorsolic.xyz">dražen o. glava</a></span>
+        <span><a href="https://github.com/glava11/web-game-demo">github</a></span>
+      </footer>
     </div>
 
     <!-- Memory Monitor (dev only) -->
     <MemoryMonitor />
+
   </div>
 </template>
 
