@@ -1,5 +1,5 @@
 {
-	"include": ["src"],
+	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.vue", "src/**/*.tsx", "src/**/*.js"],
 	"exclude": ["dist"],
 	// Visit https://aka.ms/tsconfig to read more about this file
 	"compilerOptions": {
@@ -41,6 +41,11 @@
 		"isolatedModules": true,
 		"noUncheckedSideEffectImports": true,
 		"moduleDetection": "force",
-		"skipLibCheck": true
+		"skipLibCheck": true,
+
+		"baseUrl": ".",
+		"paths": {
+			"@/*": ["src/*"]
+		}
 	}
 }

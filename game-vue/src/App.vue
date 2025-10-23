@@ -1,58 +1,60 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
-import Leaderboard from './components/Leaderboard.vue'
-import MemoryMonitor from './components/MemoryMonitor.vue'
-import NicknameInput from './components/NicknameInput.vue'
-import SliderGame from './components/SliderGame.vue'
-import { useGameStore } from './stores/gameStore'
-import { useLeaderboardStore } from './stores/leaderboardStore'
-import { useWebSocket } from './composables/useWebSocket'
-import type { Player } from './types/game.types'
+import { ref, onMounted, computed } from "vue";
+import Leaderboard from "./components/Leaderboard.vue";
+import MemoryMonitor from "./components/MemoryMonitor.vue";
+import NicknameInput from "./components/NicknameInput.vue";
+import SliderGame from "./components/SliderGame.vue";
+import { useGameStore } from "./stores/gameStore";
+import { useLeaderboardStore } from "./stores/leaderboardStore";
+import { useWebSocket } from "./composables/useWebSocket";
+import type { Player } from "./types/game.types";
 
-const leaderboardStore = useLeaderboardStore()
-const { connected, connect, submitScore, onMessage, isReconnecting } = useWebSocket()
+const leaderboardStore = useLeaderboardStore();
+const { connected, connect, submitScore, onMessage, isReconnecting } =
+  useWebSocket();
 
 // const hasNickname = ref(false)
-const pendingScore = ref<number | null>(null)
-const showNicknamePrompt = ref(false)
-const gameStore = useGameStore()
+const pendingScore = ref<number | null>(null);
+const showNicknamePrompt = ref(false);
+const gameStore = useGameStore();
 
 // Check if score qualifies for leaderboard (top 20)
 const scoreQualifies = computed(() => {
-  if (pendingScore.value === null) return false
-  if (pendingScore.value && pendingScore.value < gameStore.bestScore) return false
+  if (pendingScore.value === null) return false;
+  if (pendingScore.value && pendingScore.value < gameStore.bestScore)
+    return false;
 
-  const players = leaderboardStore.players
+  const players = leaderboardStore.players;
 
   // If less than 20 players, always qualify
-  if (players.length < 20) return true
+  if (players.length < 20) return true;
 
   // Check if score is higher than 20th place
-  const sortedPlayers = [...players].sort((a, b) => b.score - a.score)
-  const lowestScore = sortedPlayers[19]?.score ?? 0
+  const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
+  const lowestScore = sortedPlayers[19]?.score ?? 0;
 
-  return pendingScore.value > lowestScore
-})
+  return pendingScore.value > lowestScore;
+});
 
 onMounted(() => {
   // Connect to WebSocket server
-  connect()
+  connect();
   // Listen for leaderboard updates
-  onMessage('LEADERBOARD_UPDATE', (payload: { players: Player[] }) => {
-    leaderboardStore.updateLeaderboard(payload.players)
-  })
-})
+  onMessage("LEADERBOARD_UPDATE", (payload: { players: Player[] }) => {
+    leaderboardStore.updateLeaderboard(payload.players);
+  });
+});
 
 function handleScoreAchieved(score: number) {
-  pendingScore.value = score
+  pendingScore.value = score;
 
   if (scoreQualifies.value) {
     // Check if we need to prompt for nickname
     if (!leaderboardStore.currentNickname) {
-      showNicknamePrompt.value = true
+      showNicknamePrompt.value = true;
     } else if (leaderboardStore.currentNickname) {
       // Already have nickname, submit directly
-      submitScoreToServer(score)
+      submitScoreToServer(score);
     }
   } else {
     // Otherwise, score doesn't qualify, just show result
@@ -60,11 +62,11 @@ function handleScoreAchieved(score: number) {
 }
 
 function handleNicknameReady() {
-  showNicknamePrompt.value = false
+  showNicknamePrompt.value = false;
 
   if (pendingScore.value !== null) {
-    submitScoreToServer(pendingScore.value)
-    pendingScore.value = null
+    submitScoreToServer(pendingScore.value);
+    pendingScore.value = null;
   }
 }
 
@@ -72,8 +74,8 @@ function submitScoreToServer(score: number) {
   submitScore({
     nickname: leaderboardStore.currentNickname,
     score,
-    framework: 'vue'
-  })
+    framework: "vue",
+  });
 }
 </script>
 
@@ -81,10 +83,14 @@ function submitScoreToServer(score: number) {
   <div id="app">
     <!-- Connection status -->
     <div class="fixed top-4 right-4 z-50">
-      <div class="px-4 py-2 rounded-full text-sm font-semibold"
-           :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'">
+      <div
+        class="px-4 py-2 rounded-full text-sm font-semibold"
+        :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'"
+      >
         <span v-if="connected">🟢</span>
-        <span v-if="isReconnecting"><span :class="isReconnecting ? 'blink' : ''"></span></span>
+        <span v-if="isReconnecting"
+          ><span :class="isReconnecting ? 'blink' : ''"></span
+        ></span>
         <span v-if="!connected && !isReconnecting">🔴</span>
         <!-- {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }} -->
       </div>
@@ -93,19 +99,32 @@ function submitScoreToServer(score: number) {
     <!-- Main content -->
     <div class="container mx-auto px-4 py-8 space-y-8">
       <!-- Nickname prompt modal (overlay) -->
-      <div v-if="showNicknamePrompt"
-           class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
+      <div
+        v-if="showNicknamePrompt"
+        class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4"
+      >
         <div class="max-w-md w-full">
           <div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
             <h2 class="text-2xl font-bold mb-4 text-center">🎉 Great Score!</h2>
             <p class="text-gray-400 text-center mb-6">
-              You scored <span class="text-yellow-400 font-bold text-2xl">{{ pendingScore }}</span> points!
+              You scored
+              <span class="text-yellow-400 font-bold text-2xl">{{
+                pendingScore
+              }}</span>
+              points!
               <br />
               Enter your nickname to save it on the leaderboard.
             </p>
             <NicknameInput @ready="handleNicknameReady" />
-            <button @click="showNicknamePrompt = false; pendingScore = null"
-                    class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300">Skip (don't save)</button>
+            <button
+              class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300"
+              @click="
+                showNicknamePrompt = false;
+                pendingScore = null;
+              "
+            >
+              Skip (don't save)
+            </button>
           </div>
         </div>
       </div>
@@ -146,24 +165,30 @@ function submitScoreToServer(score: number) {
   z-index: 10;
   opacity: 1;
   vertical-align: middle;
-  background-color: #F00;
+  background-color: #f00;
   border-radius: 50%;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 12px;
+  box-shadow:
+    rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+    inset #441313 0 -1px 9px,
+    rgba(255, 0, 0, 0.5) 0 2px 12px;
   animation: blinkRed 0.5s infinite;
 }
 
 @keyframes blinkRed {
   from {
-    background-color: #F00;
+    background-color: #f00;
   }
 
   50% {
-    background-color: #A00;
-    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #441313 0 -1px 9px, rgba(255, 0, 0, 0.5) 0 2px 0;
+    background-color: #a00;
+    box-shadow:
+      rgba(0, 0, 0, 0.2) 0 -1px 7px 1px,
+      inset #441313 0 -1px 9px,
+      rgba(255, 0, 0, 0.5) 0 2px 0;
   }
 
   to {
-    background-color: #F00;
+    background-color: #f00;
   }
 }
 </style>

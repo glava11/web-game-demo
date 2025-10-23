@@ -1,61 +1,70 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { playCountdownBeep, playCountdownGo } from '../utils/sounds'
+import { ref, onMounted, onUnmounted } from "vue";
+import { playCountdownBeep, playCountdownGo } from "../utils/sounds";
 
 const emit = defineEmits<{
-  complete: []
-}>()
+  complete: [];
+}>();
 
-const currentNumber = ref<number | string>(3)
-const show = ref(true)
-const timeouts: number[] = []
+const currentNumber = ref<number | string>(3);
+const show = ref(true);
+const timeouts: number[] = [];
 
 onMounted(() => {
-  startCountdown()
-})
+  startCountdown();
+});
 
 onUnmounted(() => {
   // Clear any pending timeouts
-  timeouts.forEach((to) => clearTimeout(to))
-  timeouts.length = 0
-})
+  timeouts.forEach((to) => clearTimeout(to));
+  timeouts.length = 0;
+});
 
 function startCountdown() {
   // 3
-  currentNumber.value = 3
-  playCountdownBeep()
+  currentNumber.value = 3;
+  playCountdownBeep();
 
-  timeouts.push(window.setTimeout(() => {
-    // 2
-    currentNumber.value = 2
-    playCountdownBeep()
+  timeouts.push(
+    window.setTimeout(() => {
+      // 2
+      currentNumber.value = 2;
+      playCountdownBeep();
 
-    timeouts.push(window.setTimeout(() => {
-      // 1
-      currentNumber.value = 1
-      playCountdownBeep()
+      timeouts.push(
+        window.setTimeout(() => {
+          // 1
+          currentNumber.value = 1;
+          playCountdownBeep();
 
-      timeouts.push(window.setTimeout(() => {
-        // GO!
-        currentNumber.value = 'GO!'
-        playCountdownGo()
+          timeouts.push(
+            window.setTimeout(() => {
+              // GO!
+              currentNumber.value = "GO!";
+              playCountdownGo();
 
-        timeouts.push(window.setTimeout(() => {
-          show.value = false
-          emit('complete')
-        }, 350))
-      }, 700))
-    }, 700))
-  }, 700))
+              timeouts.push(
+                window.setTimeout(() => {
+                  show.value = false;
+                  emit("complete");
+                }, 350),
+              );
+            }, 700),
+          );
+        }, 700),
+      );
+    }, 700),
+  );
 }
 </script>
 
 <template>
-  <div v-if="show"
-       class="countdown-overlay">
-    <div class="countdown-number press-start-2p"
-         :class="currentNumber === 'GO!' ? 'go-burst' : ''"
-         :key="currentNumber">
+  <div v-if="show" class="countdown-overlay">
+    <div
+      :key="currentNumber"
+      class="countdown-number press-start-2p"
+      :class="currentNumber === 'GO!' ? 'go-burst' : ''"
+    >
       {{ currentNumber }}
     </div>
   </div>
@@ -77,7 +86,8 @@ function startCountdown() {
   font-size: 10rem;
   font-weight: 900;
   color: var(--color-gold);
-  text-shadow: 0 0 40px var(--color-bronze),
+  text-shadow:
+    0 0 40px var(--color-bronze),
     0 0 80px var(--color-bronze);
   animation: countdownZoom 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
