@@ -40,8 +40,9 @@ onMounted(() => {
   // Connect to WebSocket server
   connect();
   // Listen for leaderboard updates
-  onMessage("LEADERBOARD_UPDATE", (payload: { players: Player[] }) => {
-    leaderboardStore.updateLeaderboard(payload.players);
+  onMessage("LEADERBOARD_UPDATE", (payload: unknown) => {
+    const typedPayload = payload as { players: Player[] };
+    leaderboardStore.updateLeaderboard(typedPayload.players);
   });
 });
 
@@ -83,14 +84,10 @@ function submitScoreToServer(score: number) {
   <div id="app">
     <!-- Connection status -->
     <div class="fixed top-4 right-4 z-50">
-      <div
-        class="px-4 py-2 rounded-full text-sm font-semibold"
-        :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'"
-      >
+      <div class="px-4 py-2 rounded-full text-sm font-semibold"
+           :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'">
         <span v-if="connected">🟢</span>
-        <span v-if="isReconnecting"
-          ><span :class="isReconnecting ? 'blink' : ''"></span
-        ></span>
+        <span v-if="isReconnecting"><span :class="isReconnecting ? 'blink' : ''"></span></span>
         <span v-if="!connected && !isReconnecting">🔴</span>
         <!-- {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }} -->
       </div>
@@ -99,10 +96,8 @@ function submitScoreToServer(score: number) {
     <!-- Main content -->
     <div class="container mx-auto px-4 py-8 space-y-8">
       <!-- Nickname prompt modal (overlay) -->
-      <div
-        v-if="showNicknamePrompt"
-        class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4"
-      >
+      <div v-if="showNicknamePrompt"
+           class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-40 p-4">
         <div class="max-w-md w-full">
           <div class="bg-gray-800 rounded-xl p-6 shadow-2xl">
             <h2 class="text-2xl font-bold mb-4 text-center">🎉 Great Score!</h2>
@@ -110,19 +105,17 @@ function submitScoreToServer(score: number) {
               You scored
               <span class="text-yellow-400 font-bold text-2xl">{{
                 pendingScore
-              }}</span>
+                }}</span>
               points!
               <br />
               Enter your nickname to save it on the leaderboard.
             </p>
             <NicknameInput @ready="handleNicknameReady" />
-            <button
-              class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300"
-              @click="
-                showNicknamePrompt = false;
-                pendingScore = null;
-              "
-            >
+            <button class="mt-4 text-gray-500 text-sm w-full hover:text-gray-300"
+                    @click="
+                      showNicknamePrompt = false;
+                    pendingScore = null;
+                    ">
               Skip (don't save)
             </button>
           </div>
