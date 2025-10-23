@@ -16,7 +16,7 @@ export function useWebSocket() {
   const ACTIVE_TIMER: number = 60000;
   const RECONNECT_INTERVAL: number = 3000;
 
-  function connect() {
+  function connect(): void {
     try {
       ws.value = new WebSocket(WS_URL);
 
@@ -24,14 +24,12 @@ export function useWebSocket() {
         console.log("WebSocket connected");
         connected.value = true;
         error.value = null;
-        // isReconnecting.value = false;
         stopReconnectCycle();
       };
 
       ws.value.onclose = () => {
         console.log("WebSocket disconnected");
         connected.value = false;
-        // isReconnecting.value = true;
       };
 
       ws.value.onerror = (event) => {
@@ -53,7 +51,7 @@ export function useWebSocket() {
     }
   }
 
-  function disconnect() {
+  function disconnect(): void {
     if (ws.value) {
       try {
         ws.value.onopen = null;
@@ -71,7 +69,7 @@ export function useWebSocket() {
     connected.value = false;
   }
 
-  function send(message: GameMessage) {
+  function send(message: GameMessage): void {
     if (ws.value && ws.value.readyState === WebSocket.OPEN) {
       ws.value.send(JSON.stringify(message));
     } else {
@@ -79,21 +77,20 @@ export function useWebSocket() {
     }
   }
 
-  function submitScore(submission: ScoreSubmission) {
+  function submitScore(submission: ScoreSubmission): void {
     send({
       type: "SCORE_SUBMIT",
       payload: submission,
     });
   }
 
-  // Message handlers - to be set by components
   const messageHandlers = new Map<string, (payload: unknown) => void>();
 
   function onMessage(type: string, handler: (payload: unknown) => void) {
     messageHandlers.set(type, handler);
   }
 
-  function handleMessage(message: GameMessage) {
+  function handleMessage(message: GameMessage): void {
     const handler = messageHandlers.get(message.type);
     if (handler && message.payload) {
       handler(message.payload);
@@ -103,17 +100,14 @@ export function useWebSocket() {
   // Reconnect
   watch(connected, (isConnected) => {
     if (!isConnected) {
-      // start the outer cycle that opens 1-minute reconnect windows every 5 minutes
       startReconnectCycle();
     } else {
-      // connected -> stop any running timers/intervals
       stopReconnectCycle();
       console.log("Reconnection succeeded!");
     }
   });
 
-  function startReconnectCycle() {
-    // already running outer cycle?
+  function startReconnectCycle(): void {
     if (reconnecWindowtInterval.value !== null) return;
 
     console.log(
@@ -130,8 +124,7 @@ export function useWebSocket() {
     }, RECONNECT_WINDOW_INTERVAL);
   }
 
-  function startReconnectWindow() {
-    // already running window?
+  function startReconnectWindow(): void {
     if (reconnectTimer.value !== null) return;
 
     isReconnecting.value = true;
@@ -144,13 +137,13 @@ export function useWebSocket() {
     // attempt immediately
     connect();
 
-    // then attempt every RECONNECT_ATTEMPT_MS
+    // then attempt every RECONNECT_INTERVAL
     reconnectTimer.value = window.setInterval(() => {
       console.log("Attempting to reconnect...");
       connect();
     }, RECONNECT_INTERVAL);
 
-    // stop the attempts after RECONNECT_WINDOW_MS
+    // stop the attempts after ACTIVE_TIMER
     activeTimer.value = window.setTimeout(() => {
       console.log("Reconnect attempts window ended");
       if (reconnectTimer.value !== null) {
@@ -161,23 +154,19 @@ export function useWebSocket() {
         clearTimeout(activeTimer.value);
         activeTimer.value = null;
       }
-      // keep isReconnecting true until either outer cycle restarts window or a connection is established
       isReconnecting.value = false;
     }, ACTIVE_TIMER);
   }
 
-  function stopReconnectCycle() {
-    // clear outer interval
+  function stopReconnectCycle(): void {
     if (reconnecWindowtInterval.value !== null) {
       clearInterval(reconnecWindowtInterval.value);
       reconnecWindowtInterval.value = null;
     }
-    // clear running reconnect attempts
     if (reconnectTimer.value !== null) {
       clearInterval(reconnectTimer.value);
       reconnectTimer.value = null;
     }
-    // clear reconnect window timeout
     if (activeTimer.value !== null) {
       clearTimeout(activeTimer.value);
       activeTimer.value = null;
@@ -185,7 +174,6 @@ export function useWebSocket() {
     isReconnecting.value = false;
   }
 
-  // Cleanup on component unmount
   onUnmounted(() => {
     disconnect();
     stopReconnectCycle();

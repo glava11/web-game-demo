@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onUnmounted, computed } from "vue";
 import { useGameStore } from "../stores/gameStore";
-// import { useLeaderboardStore } from '../stores/leaderboardStore'
 import { getScoreRating } from "../utils/scoring";
 import {
   celebrateScore,
@@ -26,7 +25,6 @@ const props = defineProps<{
 }>();
 
 const gameStore = useGameStore();
-// const leaderboardStore = useLeaderboardStore()
 const animationFrameId = ref<number | null>(null);
 const startTime = ref<number>(0);
 // FPS tracking
@@ -79,8 +77,6 @@ function animate(): void {
   // Calculate position using sine wave (smooth oscillation)
   progress.value = (elapsed % CYCLE_DURATION) / CYCLE_DURATION;
   const position = 50 + 50 * Math.sin(progress.value * Math.PI * 2);
-  // direction.value = position >= 50 ? 1 : -1
-  // direction.value = Math.sin(progress.value * Math.PI * 2) >= 0 ? 1 : -1
   direction.value = Math.cos(progress.value * Math.PI * 2) >= 0 ? -1 : 1;
 
   gameStore.updatePosition(position);
@@ -142,7 +138,6 @@ async function stopGame(): Promise<void> {
 
 function playAgain(): void {
   gameStore.resetGame();
-  //   startGame()
   initiateStart();
 }
 
@@ -160,7 +155,8 @@ onUnmounted(() => {
 <template>
   <div class="game-container max-w-2xl w-full mx-auto">
     <!-- Countdown Overlay -->
-    <GameCountdown v-if="showCountdown" @complete="onCountdownComplete" />
+    <GameCountdown v-if="showCountdown"
+                   @complete="onCountdownComplete" />
     <!-- Game Title -->
     <div class="text-center mb-8">
       <h1 class="text-7xl font-bold mb-2 text-silver press-start-2p flicker">
@@ -176,11 +172,12 @@ onUnmounted(() => {
       FPS:
       <span class="font-mono">{{
         `${frameRate || "--"} / ${maxFrameRate || "--"}`
-      }}</span>
+        }}</span>
     </div>
 
     <!-- Best Score Display -->
-    <div v-if="gameStore.bestScore > 0" class="text-center mb-4">
+    <div v-if="gameStore.bestScore > 0"
+         class="text-center mb-4">
       <p class="text-sm text-gray-400">
         Best Score:
         <span class="text-yellow-400 font-bold">{{ gameStore.bestScore }}</span>
@@ -190,76 +187,60 @@ onUnmounted(() => {
     <!-- Game Area -->
     <div class="rounded-xl p-8 shadow-2xl game-area">
       <!-- Slider Track (only shown when playing) -->
-      <div v-if="gameStore.isPlaying" class="mb-8">
-        <div
-          class="relative h-40 rounded-lg overflow-hidden"
-          style="background-color: var(--color-bg-playground)"
-        >
+      <div v-if="gameStore.isPlaying"
+           class="mb-8">
+        <div class="relative h-40 rounded-lg overflow-hidden"
+             style="background-color: var(--color-bg-playground)">
           <!-- Target line (center) -->
-          <div
-            class="absolute top-0 bottom-0 w-1"
-            style="
+          <div class="absolute top-0 bottom-0 w-1"
+               style="
               left: 50%;
               transform: translateX(-50%);
               background-color: var(--color-gold);
-            "
-          ></div>
+            "></div>
 
           <!-- Moving slider indicator -->
-          <div
-            class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
-            :class="direction == 1 ? 'right' : 'left'"
-            :style="{
-              left: gameStore.sliderPosition + '%',
-              transform: 'translateX(-50%)',
-              willChange: 'transform',
-              backgroundColor: 'var(--color-success)',
-            }"
-          ></div>
+          <div class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
+               :class="direction == 1 ? 'right' : 'left'"
+               :style="{
+                left: gameStore.sliderPosition + '%',
+                transform: 'translateX(-50%)',
+                willChange: 'transform',
+                backgroundColor: 'var(--color-success)',
+              }"></div>
         </div>
 
         <!-- Position indicator -->
         <div class="text-center mt-2 text-gray-400 text-sm">
           Position: {{ gameStore.sliderPosition.toFixed(1) }}%
         </div>
-        <!-- Progress indicator -->
-        <div class="text-center mt-2 text-gray-400 text-sm">
-          Progress: {{ progress.toFixed(2) }}
-        </div>
-        <!-- Direction indicator -->
-        <div class="text-center mt-2 text-gray-400 text-sm">
-          Direction: {{ direction.toFixed(2) }}
-        </div>
       </div>
 
       <!-- Control Buttons -->
       <div class="flex justify-center gap-4 h-full">
         <!-- Start Button -->
-        <button
-          v-if="!gameStore.isPlaying && !gameStore.hasScore"
-          class="btn btn-primary start-btn press-start-2p pulse-btn"
-          @click="initiateStart"
-          @mouseenter="playHover()"
-        >
+        <button v-if="!gameStore.isPlaying && !gameStore.hasScore"
+                class="btn btn-primary start-btn press-start-2p pulse-btn"
+                @click="initiateStart"
+                @mouseenter="playHover()">
           Start Game
         </button>
 
         <!-- Stop Button -->
-        <button
-          v-if="gameStore.isPlaying"
-          class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
-          :style="{
-            '--shake-intensity': `${shakeIntensity * 0.5}px`,
-          }"
-          @click="stopGame"
-          @mouseenter="playHover()"
-        >
+        <button v-if="gameStore.isPlaying"
+                class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
+                :style="{
+                  '--shake-intensity': `${shakeIntensity * 0.5}px`,
+                }"
+                @click="stopGame"
+                @mouseenter="playHover()">
           STOP!
         </button>
       </div>
 
       <!-- Score Display -->
-      <div v-if="gameStore.hasScore" class="text-center mt-8">
+      <div v-if="gameStore.hasScore"
+           class="text-center mt-8">
         <div class="mb-6">
           <p class="text-8xl font-bold text-gold mb-8 press-start-2p pulsate">
             {{ gameStore.currentScore }}
@@ -275,14 +256,11 @@ onUnmounted(() => {
             Distance from Center:
             {{ Math.abs(gameStore.sliderPosition - 50).toFixed(3) }}%
           </p>
-          <p>Final Progress: {{ progress.toFixed(3) }}%</p>
         </div>
 
-        <button
-          class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
-          @click="playAgain"
-          @mouseenter="playHover()"
-        >
+        <button class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
+                @click="playAgain"
+                @mouseenter="playHover()">
           Play Again
         </button>
       </div>
@@ -306,7 +284,6 @@ onUnmounted(() => {
 
 .text-silver {
   color: var(--color-silver);
-  /* text-shadow: 0 0 40px var(--color-silver), 0 0 15px var(--color-silver); */
 }
 
 .text-rating {
@@ -349,7 +326,19 @@ onUnmounted(() => {
   font-size: 1.1rem;
 
   span {
-    color: yellow;
+    color: var(--fps-color);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -390,106 +379,8 @@ onUnmounted(() => {
   animation: pulsate-fwd-normal 2.5s ease-in-out 0s infinite normal none;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Shake animation - intensity increases with time */
-.game-shaking {
-  animation: gameShaking 0.15s infinite;
-}
-
-@keyframes gameShaking {
-  0%,
-  100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-
-  25% {
-    transform: translate(
-        calc(var(--shake-intensity) * -0.5),
-        calc(var(--shake-intensity) * 0.3)
-      )
-      rotate(calc(var(--shake-intensity) * -0.1deg));
-  }
-
-  50% {
-    transform: translate(
-        calc(var(--shake-intensity) * 0.5),
-        calc(var(--shake-intensity) * -0.3)
-      )
-      rotate(calc(var(--shake-intensity) * 0.1deg));
-  }
-
-  75% {
-    transform: translate(
-        calc(var(--shake-intensity) * -0.3),
-        calc(var(--shake-intensity) * 0.5)
-      )
-      rotate(calc(var(--shake-intensity) * -0.05deg));
-  }
-}
-
-/* Shake animation - intensity increases with time */
-.game-shake-roto {
-  animation: gameShakeRoto 0.15s infinite;
-}
-
-/* Rotate shake (dizzying) */
-@keyframes gameShakeRoto {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  25% {
-    transform: rotate(calc(var(--shake-intensity) * 0.5deg));
-  }
-
-  50% {
-    transform: rotate(calc(var(--shake-intensity) * -0.5deg));
-  }
-
-  75% {
-    transform: rotate(calc(var(--shake-intensity) * 0.3deg));
-  }
-
-  100% {
-    transform: rotate(0deg);
-  }
-}
-
-/* Shake animation - intensity increases with time */
-.game-shake-bounce {
-  animation: gameShakeBounce 0.15s infinite;
-}
-
-/* Vertical bounce (earthquake) */
-@keyframes gameShakeBounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(calc(var(--shake-intensity) * -1px));
-  }
-}
-
-/* Stop button shakes more intensely */
-.stop-button-shake {
-  animation: buttonShake 0.15s infinite;
-  transform-origin: center;
-}
-
 @keyframes buttonShake {
+
   0%,
   100% {
     transform: translate(0, 0) scale(1);
@@ -504,27 +395,13 @@ onUnmounted(() => {
   }
 }
 
-.game-shake {
-  animation: gameShake 0.15s infinite;
+.stop-button-shake {
+  animation: buttonShake 0.15s infinite;
   transform-origin: center;
 }
 
-@keyframes gameShake {
-  0%,
-  100% {
-    transform: translate(0, 0) scale(1);
-  }
-
-  33% {
-    transform: translate(calc(var(--shake-intensity) * -0.5), 0) scale(1.15);
-  }
-
-  66% {
-    transform: translate(calc(var(--shake-intensity) * 0.5), 0) scale(0.85);
-  }
-}
-
 @keyframes flicker {
+
   0%,
   19%,
   21%,
@@ -553,7 +430,6 @@ onUnmounted(() => {
 }
 
 .flicker {
-  /* text-shadow: 0 0 40px var(--color-silver), 0 0 15px var(--color-silver); */
   animation: flicker 2.5s infinite alternate;
 }
 </style>

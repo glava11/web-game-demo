@@ -9,7 +9,6 @@
   src:
     local("Press Start 2P"),
     url(@/assets/PressStart2P-Regular.ttf) format("truetype");
-  /* @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap'); */
 }
 
 .press-start-2p {

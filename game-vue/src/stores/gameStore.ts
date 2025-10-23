@@ -13,13 +13,13 @@ export const useGameStore = defineStore("game", () => {
   const hasScore = computed(() => currentScore.value !== null);
 
   // Actions
-  function startGame() {
+  function startGame(): void {
     isPlaying.value = true;
     currentScore.value = null;
     sliderPosition.value = 50;
   }
 
-  function stopGame() {
+  function stopGame(): void {
     if (!isPlaying.value) return;
 
     isPlaying.value = false;
@@ -32,11 +32,11 @@ export const useGameStore = defineStore("game", () => {
     }
   }
 
-  function updatePosition(position: number) {
+  function updatePosition(position: number): void {
     sliderPosition.value = position;
   }
 
-  function resetGame() {
+  function resetGame(): void {
     currentScore.value = null;
     sliderPosition.value = 50;
   }

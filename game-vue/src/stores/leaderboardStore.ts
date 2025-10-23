@@ -29,15 +29,15 @@ export const useLeaderboardStore = defineStore("leaderboard", () => {
   });
 
   // Actions
-  function updateLeaderboard(newPlayers: Player[]) {
+  function updateLeaderboard(newPlayers: Player[]): void {
     players.value = newPlayers;
   }
 
-  function setNickname(nickname: string) {
+  function setNickname(nickname: string): void {
     currentNickname.value = nickname;
   }
 
-  function clearNickname() {
+  function clearNickname(): void {
     currentNickname.value = "";
   }
 

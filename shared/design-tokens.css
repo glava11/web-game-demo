@@ -36,6 +36,7 @@
 	--color-danger-02: #ef444425;
 	--color-bg-playground: #0c2106;
 	--color-indicator: #fbbe24c8;
+	--fps-color: #ffff00;
 
 	/* Spacing Scale (8px base) */
 	--space-xs: 0.5rem; /* 8px */
@@ -79,6 +80,7 @@
 	--slider-speed: 2s;
 	--score-max: 1000;
 	--animation-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	--shake-intensity: 5;
 
 	/* Z-Index Scale */
 	--z-base: 1;

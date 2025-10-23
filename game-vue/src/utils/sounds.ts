@@ -24,7 +24,7 @@ class SoundManager {
     return this.audioContext;
   }
 
-  setEnabled(enabled: boolean) {
+  setEnabled(enabled: boolean): void {
     this.enabled = enabled;
   }
 
@@ -44,7 +44,7 @@ class SoundManager {
     frequency: number,
     duration: number,
     type: OscillatorType = "sine",
-  ) {
+  ): void {
     if (!this.enabled) return;
 
     try {
@@ -82,7 +82,7 @@ class SoundManager {
     }
   }
 
-  cleanup() {
+  cleanup(): void {
     this.stopTension();
 
     this.activeTimeouts.forEach((id) => clearTimeout(id));
@@ -106,12 +106,12 @@ class SoundManager {
   }
 
   // Countdown beeps
-  playCountdownBeep() {
+  playCountdownBeep(): void {
     this.playTone(440, 0.15, "square");
   }
 
   // GO! beep
-  playCountdownGo() {
+  playCountdownGo(): void {
     this.playTone(444, 0.55, "square");
   }
 
@@ -119,7 +119,7 @@ class SoundManager {
   private tensionInterval: number | null = null;
   private tensionFrequency = 220;
 
-  startTension() {
+  startTension(): void {
     this.stopTension();
 
     this.tensionInterval = window.setInterval(() => {
@@ -129,7 +129,7 @@ class SoundManager {
     }, 500) as number;
   }
 
-  stopTension() {
+  stopTension(): void {
     if (this.tensionInterval) {
       clearInterval(this.tensionInterval);
       this.tensionInterval = null;
@@ -138,18 +138,18 @@ class SoundManager {
   }
 
   // Game start - ascending tone
-  playStart() {
+  playStart(): void {
     this.playTone(440, 0.1);
     this.trackTimeout(() => this.playTone(554, 0.15), 100);
   }
 
   // Stop button clicked - sharp beep
-  playStop() {
+  playStop(): void {
     this.playTone(880, 0.05, "square");
   }
 
   // Score reveal
-  playScore(score: number) {
+  playScore(score: number): void {
     if (score >= 995) {
       // Perfect - triumphant chord
       this.playTone(523, 0.3); // C
@@ -172,7 +172,7 @@ class SoundManager {
   }
 
   // New best score - celebration
-  playNewBest() {
+  playNewBest(): void {
     const notes = [523, 659, 784, 1047]; // C E G C
     notes.forEach((freq, i) => {
       this.trackTimeout(() => this.playTone(freq, 0.15), i * 80);
@@ -180,7 +180,7 @@ class SoundManager {
   }
 
   // Button hover - subtle click
-  playHover() {
+  playHover(): void {
     this.playTone(1000, 0.02, "square");
   }
 }

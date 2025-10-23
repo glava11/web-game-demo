@@ -59,12 +59,11 @@ function startCountdown() {
 </script>
 
 <template>
-  <div v-if="show" class="countdown-overlay">
-    <div
-      :key="currentNumber"
-      class="countdown-number press-start-2p"
-      :class="currentNumber === 'GO!' ? 'go-burst' : ''"
-    >
+  <div v-if="show"
+       class="countdown-overlay">
+    <div :key="currentNumber"
+         class="countdown-number press-start-2p"
+         :class="currentNumber === 'GO!' ? 'go-burst' : ''">
       {{ currentNumber }}
     </div>
   </div>
@@ -134,7 +133,6 @@ function startCountdown() {
   }
 }
 
-/* Mobile adjustments */
 @media (max-width: 640px) {
   .countdown-number {
     font-size: 6rem;

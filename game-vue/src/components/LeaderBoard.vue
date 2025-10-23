@@ -3,7 +3,6 @@ import { useLeaderboardStore } from "../stores/leaderboardStore";
 
 const leaderboardStore = useLeaderboardStore();
 
-// Framework emoji mapping
 const frameworkEmoji: Record<string, string> = {
   vue: "💚",
   react: "⚛️",
@@ -33,10 +32,8 @@ function formatTime(timestamp: number): string {
 
 <template>
   <div class="max-w-4xl w-full mx-auto">
-    <div
-      class="rounded-xl p-6 shadow-2xl"
-      style="background-color: var(--color-bg-card)"
-    >
+    <div class="rounded-xl p-6 shadow-2xl"
+         style="background-color: var(--color-bg-card)">
       <div class="flex items-center justify-center mb-2">
         <h2 class="text-2xl font-bold">🏆 Global Leaderboard 🏆</h2>
       </div>
@@ -45,10 +42,8 @@ function formatTime(timestamp: number): string {
       </div>
 
       <!-- Current player stats -->
-      <div
-        v-if="leaderboardStore.currentPlayerRank"
-        class="bg-gray-700 rounded-lg p-4 mb-4 border-2 border-primary"
-      >
+      <div v-if="leaderboardStore.currentPlayerRank"
+           class="bg-gray-700 rounded-lg p-4 mb-4 border-2 border-primary">
         <div class="flex justify-between items-center">
           <div>
             <span class="text-gray-400">Your Rank:</span>
@@ -67,71 +62,57 @@ function formatTime(timestamp: number): string {
 
       <!-- Leaderboard table -->
       <div class="overflow-hidden rounded-lg">
-        <div
-          v-if="leaderboardStore.topPlayers.length === 0"
-          class="text-center py-12 text-gray-500"
-        >
-          No scores yet. Be the first! 🎯
+        <div v-if="leaderboardStore.topPlayers.length === 0"
+             class="text-center py-12 text-gray-500">
+          No scores yet. Be the first!
         </div>
 
-        <table v-else class="w-full">
+        <table v-else
+               class="w-full">
           <thead class="bg-gray-900">
             <tr>
-              <th
-                class="px-4 py-3 text-left text-sm font-semibold text-gray-400"
-              >
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-400">
                 Rank
               </th>
-              <th
-                class="px-4 py-3 text-left text-sm font-semibold text-gray-400"
-              >
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-400">
                 Player
               </th>
-              <th
-                class="px-4 py-3 text-left text-sm font-semibold text-gray-400"
-              >
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-400">
                 Score
               </th>
-              <th
-                class="px-4 py-3 text-left text-sm font-semibold text-gray-400"
-              >
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-400">
                 Framework
               </th>
-              <th
-                class="px-4 py-3 text-left text-sm font-semibold text-gray-400"
-              >
+              <th class="px-4 py-3 text-left text-sm font-semibold text-gray-400">
                 Time
               </th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-700">
-            <tr
-              v-for="(player, index) in leaderboardStore.topPlayers"
-              :key="player.id"
-              :class="{
-                'bg-yellow-900 bg-opacity-20': index === 0,
-                'bg-gray-700 bg-opacity-30': index === 1,
-                'bg-orange-900 bg-opacity-20': index === 2,
-                'bg-primary bg-opacity-10':
-                  player.nickname === leaderboardStore.currentNickname,
-              }"
-              class="hover:bg-gray-700 hover:bg-opacity-50 transition-colors"
-            >
+            <tr v-for="(player, index) in leaderboardStore.topPlayers"
+                :key="player.id"
+                :class="{
+                  'bg-yellow-900 bg-opacity-20': index === 0,
+                  'bg-gray-700 bg-opacity-30': index === 1,
+                  'bg-orange-900 bg-opacity-20': index === 2,
+                  'bg-primary bg-opacity-10':
+                    player.nickname === leaderboardStore.currentNickname,
+                }"
+                class="hover:bg-gray-700 hover:bg-opacity-50 transition-colors">
               <!-- Rank -->
               <td class="px-4 py-3 text-lg font-bold">
                 <span v-if="index === 0">🥇</span>
                 <span v-else-if="index === 1">🥈</span>
                 <span v-else-if="index === 2">🥉</span>
-                <span v-else class="text-gray-400">#{{ index + 1 }}</span>
+                <span v-else
+                      class="text-gray-400">#{{ index + 1 }}</span>
               </td>
 
               <!-- Player name -->
               <td class="px-4 py-3 font-semibold">
                 {{ player.nickname }}
-                <span
-                  v-if="player.nickname === leaderboardStore.currentNickname"
-                  class="ml-2 text-xs text-primary"
-                >
+                <span v-if="player.nickname === leaderboardStore.currentNickname"
+                      class="ml-2 text-xs text-primary">
                   (You)
                 </span>
               </td>

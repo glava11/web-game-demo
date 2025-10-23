@@ -13,7 +13,6 @@ const leaderboardStore = useLeaderboardStore();
 const { connected, connect, submitScore, onMessage, isReconnecting } =
   useWebSocket();
 
-// const hasNickname = ref(false)
 const pendingScore = ref<number | null>(null);
 const showNicknamePrompt = ref(false);
 const gameStore = useGameStore();
@@ -26,10 +25,8 @@ const scoreQualifies = computed(() => {
 
   const players = leaderboardStore.players;
 
-  // If less than 20 players, always qualify
   if (players.length < 20) return true;
 
-  // Check if score is higher than 20th place
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
   const lowestScore = sortedPlayers[19]?.score ?? 0;
 
@@ -37,16 +34,14 @@ const scoreQualifies = computed(() => {
 });
 
 onMounted(() => {
-  // Connect to WebSocket server
   connect();
-  // Listen for leaderboard updates
   onMessage("LEADERBOARD_UPDATE", (payload: unknown) => {
     const typedPayload = payload as { players: Player[] };
     leaderboardStore.updateLeaderboard(typedPayload.players);
   });
 });
 
-function handleScoreAchieved(score: number) {
+function handleScoreAchieved(score: number): void {
   pendingScore.value = score;
 
   if (scoreQualifies.value) {
@@ -58,11 +53,11 @@ function handleScoreAchieved(score: number) {
       submitScoreToServer(score);
     }
   } else {
-    // Otherwise, score doesn't qualify, just show result
+    // just show the result
   }
 }
 
-function handleNicknameReady() {
+function handleNicknameReady(): void {
   showNicknamePrompt.value = false;
 
   if (pendingScore.value !== null) {
@@ -86,10 +81,9 @@ function submitScoreToServer(score: number) {
     <div class="fixed top-4 right-4 z-50">
       <div class="px-4 py-2 rounded-full text-sm font-semibold"
            :class="connected ? 'bg-opacity-20 success' : 'bg-opacity-20 danger'">
-        <span v-if="connected">🟢</span>
-        <span v-if="isReconnecting"><span :class="isReconnecting ? 'blink' : ''"></span></span>
-        <span v-if="!connected && !isReconnecting">🔴</span>
-        <!-- {{ connected ? '🟢 Connected' : isReconnecting ? '🔴 connecting...' : '🔴 Disconnected' }} -->
+        <span v-if="connected">🟢 Connected</span>
+        <span v-if="isReconnecting"><span :class="isReconnecting ? 'blink' : ''">🔴 connecting...</span></span>
+        <span v-if="!connected && !isReconnecting">🔴 Disconnected</span>
       </div>
     </div>
 

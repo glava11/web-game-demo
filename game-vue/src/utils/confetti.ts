@@ -5,7 +5,6 @@ const activeTimeouts: number[] = [];
 function trackTimeout(fn: () => void, delay: number): number {
   const id = window.setTimeout(() => {
     fn();
-    // Remove from tracking after execution
     const index = activeTimeouts.indexOf(id);
     if (index > -1) activeTimeouts.splice(index, 1);
   }, delay);
@@ -54,7 +53,6 @@ export function celebratePerfectScore(): void {
 
     if (Date.now() < end) {
       trackTimeout(frame, 16);
-      // requestAnimationFrame(frame);
     }
   })();
 }
@@ -99,7 +97,7 @@ export function celebrateScore(score: number): void {
   } else if (score >= 700) {
     celebrateGoodScore();
   }
-  // Below 700 = no confetti, try again!
+  // try again
 }
 
 /**

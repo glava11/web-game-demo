@@ -2,7 +2,10 @@
  * Visual effects utilities
  */
 
-export function flashScreen(color: string = "#ffffff", duration: number = 300) {
+export function flashScreen(
+  color: string = "#ffffff",
+  duration: number = 300,
+): void {
   // Create flash overlay
   const flash = document.createElement("div");
   flash.style.cssText = `
@@ -35,43 +38,43 @@ export function flashScreen(color: string = "#ffffff", duration: number = 300) {
   }, duration);
 }
 
-export function flashPerfect() {
+export function flashPerfect(): void {
   // Gold flash for perfect score
   flashScreen("#FFD700", 400);
 }
 
-export function flashExcellent() {
+export function flashExcellent(): void {
   // Blue flash for excellent score
   flashScreen("#3b82f6", 300);
 }
 
-export function vibrate(pattern: number | number[]) {
+export function vibrate(pattern: number | number[]): void {
   if ("vibrate" in navigator) {
     navigator.vibrate(pattern);
   }
 }
 
-export function vibratePerfect() {
+export function vibratePerfect(): void {
   // Strong, celebratory pattern
   vibrate([100, 50, 100, 50, 200]);
 }
 
-export function vibrateExcellent() {
+export function vibrateExcellent(): void {
   // Medium pattern
   vibrate([100, 50, 100]);
 }
 
-export function vibrateGood() {
+export function vibrateGood(): void {
   // Light pattern
   vibrate([50, 30, 50]);
 }
 
-export function vibrateStop() {
+export function vibrateStop(): void {
   // Single quick pulse
   vibrate(30);
 }
 
-export function playEffects(score: number) {
+export function playEffects(score: number): void {
   if (score >= 995) {
     flashPerfect();
     vibratePerfect();

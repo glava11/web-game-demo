@@ -25,7 +25,10 @@ export default typescriptEslint.config(
       },
     },
     rules: {
-      // your rules
+      "vue/attributes-linebreak": [
+        "error",
+        { singleline: "ignore", multiline: "last" },
+      ],
     },
   },
   eslintConfigPrettier,
