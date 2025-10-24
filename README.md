@@ -2,7 +2,7 @@
 
 A high-performance, real-time multiplayer game built with modern web technologies. Stop the slider as close to center as possible and compete on a global leaderboard!
 
-![Quicky Finger Demo](./assets/qf-demo.gif)
+![Quicky Finger Demo](./game-vue/src/assets/qf-demo.gif)
 
 **Live Demo:** [Quicky Finger](https://quicky-finger.drazenorsolic.xyz/)
 
