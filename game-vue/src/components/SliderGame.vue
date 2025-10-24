@@ -159,7 +159,7 @@ onUnmounted(() => {
     <!-- Game Title -->
     <div class="text-center mb-8">
       <h1
-        class="text-6xl md:text-7xl xl:text-9xl px-1 font-bold mb-2 text-silver press-start-2p flicker"
+        class="text-5xl sm:text-7xl xl:text-9xl px-1 font-bold mb-2 max-w-max text-silver press-start-2p flicker"
       >
         Quicky Finger
       </h1>
@@ -250,7 +250,9 @@ onUnmounted(() => {
       <!-- Score Display -->
       <div v-if="gameStore.hasScore" class="text-center mt-0 sm:mt-8">
         <div class="mb-6">
-          <p class="text-8xl font-bold text-gold mb-8 press-start-2p pulsate">
+          <p
+            class="text-6xl sm:text-8xl font-bold text-gold mb-8 mx-auto press-start-2p pulsate"
+          >
             {{ gameStore.currentScore }}
           </p>
           <p class="text-2xl text-rating text-gray-300 press-start-2p">
@@ -326,7 +328,7 @@ onUnmounted(() => {
 
 .start-btn {
   align-self: center !important;
-  height: 6rem !important;
+  min-height: 6rem !important;
 }
 
 .fps-counter {
@@ -383,6 +385,7 @@ onUnmounted(() => {
 }
 
 .pulsate {
+  width: min-content;
   animation: pulsate-fwd-normal 2.5s ease-in-out 0s infinite normal none;
 }
 
