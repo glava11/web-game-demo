@@ -212,16 +212,6 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 
 ---
 
-## Documentation
-
-- [Architecture](./docs/ARCHITECTURE.md) - System design and decisions
-- [API Protocol](./docs/API.md) - WebSocket message format
-- [Development](../../development_doc.md) - Technical decisions
-- [Learning](../../learning_doc.md) - Process and insights
-- [Project structure](../../project_structure.md) - Project structure
-
----
-
 ## Contributing
 
 This is a personal learning project, but feedback is welcome!
