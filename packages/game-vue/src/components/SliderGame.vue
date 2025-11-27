@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, onUnmounted, computed } from "vue";
 import { useGameStore } from "../stores/gameStore";
-import { getScoreRating } from "../utils/scoring";
+import { getScoreRating } from "@quicky-finger/shared";
 import {
   celebrateScore,
   celebrateNewBest,
   cleanupConfetti,
-} from "../utils/confetti";
+} from "@quicky-finger/shared";
 import {
   playStart,
   playStop,
@@ -16,8 +16,8 @@ import {
   startTension,
   stopTension,
   cleanupSounds,
-} from "../utils/sounds";
-import { playEffects, vibrateStop } from "../utils/effects";
+} from "@quicky-finger/shared";
+import { playEffects, vibrateStop } from "@quicky-finger/shared";
 import GameCountdown from "./GameCountdown.vue";
 // Props - accept WebSocket submit function
 const props = defineProps<{
@@ -188,13 +188,11 @@ onUnmounted(() => {
     <div class="rounded-xl p-2 md:p-8 shadow-2xl game-area">
       <!-- Slider Track (only shown when playing) -->
       <div v-if="gameStore.isPlaying" class="mb-8">
-        <div
-          class="relative h-40 rounded-lg overflow-hidden max-w-full"
+        <div class="relative h-40 rounded-lg overflow-hidden max-w-full"
           style="background-color: var(--color-bg-playground)"
         >
           <!-- Target line (center) -->
-          <div
-            class="absolute top-0 bottom-0 w-1"
+          <div class="absolute top-0 bottom-0 w-1"
             style="
               left: 50%;
               transform: translateX(-50%);
@@ -203,8 +201,7 @@ onUnmounted(() => {
           ></div>
 
           <!-- Moving slider indicator -->
-          <div
-            class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
+          <div class="slider absolute top-0 bottom-0 w-2 rounded transition-transform"
             :class="direction == 1 ? 'right' : 'left'"
             :style="{
               left: gameStore.sliderPosition + '%',
@@ -224,8 +221,7 @@ onUnmounted(() => {
       <!-- Control Buttons -->
       <div class="flex justify-center gap-4 h-full">
         <!-- Start Button -->
-        <button
-          v-if="!gameStore.isPlaying && !gameStore.hasScore"
+        <button v-if="!gameStore.isPlaying && !gameStore.hasScore"
           class="btn btn-primary start-btn press-start-2p pulse-btn"
           @click="initiateStart"
           @mouseenter="playHover()"
@@ -234,8 +230,7 @@ onUnmounted(() => {
         </button>
 
         <!-- Stop Button -->
-        <button
-          v-if="gameStore.isPlaying"
+        <button v-if="gameStore.isPlaying"
           class="btn btn-danger stop-btn animate-pulse stop-button-shake press-start-2p"
           :style="{
             '--shake-intensity': `${shakeIntensity * 0.5}px`,
@@ -268,8 +263,7 @@ onUnmounted(() => {
           </p>
         </div>
 
-        <button
-          class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
+        <button class="btn btn-primary text-xl px-8 py-3 press-start-2p pulse-btn"
           @click="playAgain"
           @mouseenter="playHover()"
         >

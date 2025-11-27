@@ -10,8 +10,8 @@
     "build:vue": "npm run build --workspace=game-vue",
     "build:react": "npm run build --workspace=game-react",
     "build:server": "npm run build --workspace=ws-server",
-    "build:all": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces"
+    "build:all": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
   }
 }

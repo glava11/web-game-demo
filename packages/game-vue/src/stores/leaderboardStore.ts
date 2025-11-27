@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import type { Player } from "../types/game.types";
+import type { Player } from "@quicky-finger/shared";
 
 export const useLeaderboardStore = defineStore("leaderboard", () => {
   // State

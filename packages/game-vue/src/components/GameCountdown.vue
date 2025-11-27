@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from "vue";
-import { playCountdownBeep, playCountdownGo } from "../utils/sounds";
+import { playCountdownBeep, playCountdownGo } from "@quicky-finger/shared";
 
 const emit = defineEmits<{
   complete: [];
@@ -60,8 +60,7 @@ function startCountdown() {
 
 <template>
   <div v-if="show" class="countdown-overlay">
-    <div
-      :key="currentNumber"
+    <div :key="currentNumber"
       class="countdown-number press-start-2p"
       :class="currentNumber === 'GO!' ? 'go-burst' : ''"
     >

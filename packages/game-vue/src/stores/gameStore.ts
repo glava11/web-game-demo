@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-// import { calculateScore } from "../utils/scoring";
 import { calculateScore } from "@quicky-finger/shared";
 
 export const useGameStore = defineStore("game", () => {

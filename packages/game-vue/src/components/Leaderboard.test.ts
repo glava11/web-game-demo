@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 import { createPinia, setActivePinia } from "pinia";
 import Leaderboard from "./LeaderBoard.vue";
 import { useLeaderboardStore } from "../stores/leaderboardStore";
-import type { Player } from "../types/game.types";
+import type { Player } from "@quicky-finger/shared";
 
 describe("Leaderboard", () => {
   beforeEach(() => {

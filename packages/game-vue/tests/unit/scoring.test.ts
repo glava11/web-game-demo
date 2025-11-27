@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { calculateScore, getScoreRating } from "./scoring";
+import { calculateScore, getScoreRating } from "@quicky-finger/shared";
 
 describe("calculateScore", () => {
   it("awards 1000 points for perfect center", () => {

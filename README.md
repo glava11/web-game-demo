@@ -73,15 +73,6 @@ cd web-game-demo
 
 # Install all dependencies in monorepo
 npm install
-
-# ?? 
-# # Install frontend dependencies
-# cd game-vue
-# npm install
-
-# # Install server dependencies
-# cd ../ws-server
-# npm install
 ```
 
 ### Running Locally

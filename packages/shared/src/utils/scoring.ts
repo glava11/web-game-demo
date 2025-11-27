@@ -1,4 +1,4 @@
-import { ScoreRating } from "../types/game.types";
+import { ScoreRating } from "@quicky-finger/shared";
 
 /**
  * Calculate score based on how close position is to target

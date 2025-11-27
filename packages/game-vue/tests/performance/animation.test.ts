@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useGameStore } from "../../src/stores/gameStore";
-import { calculateScore } from "../../src/utils/scoring";
+import { calculateScore } from "@quicky-finger/shared";
 
 /**
  * Performance tests for game animations and calculations

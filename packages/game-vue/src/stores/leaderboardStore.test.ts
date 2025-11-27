@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useLeaderboardStore } from "./leaderboardStore";
-import type { Player } from "../types/game.types";
+import type { Player } from "@quicky-finger/shared";
 
 describe("leaderboardStore", () => {
   beforeEach(() => {

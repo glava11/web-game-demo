@@ -1,5 +1,5 @@
 import { ref, onUnmounted, watch } from "vue";
-import type { GameMessage, ScoreSubmission } from "../types/game.types";
+import type { GameMessage, ScoreSubmission } from "@quicky-finger/shared";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
 

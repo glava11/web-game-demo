@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from "vitest";
 import { setActivePinia, createPinia } from "pinia";
 import { useLeaderboardStore } from "../../src/stores/leaderboardStore";
 import { useGameStore } from "../../src/stores/gameStore";
-import type { Player } from "../../src/types/game.types";
+import type { Player } from "@quicky-finger/shared";
 
 /**
  * Integration tests for WebSocket flow
