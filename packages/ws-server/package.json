@@ -1,6 +1,6 @@
 {
 	"name": "ws-server",
-	"version": "0.0.1",
+	"version": "0.11.0",
 	"description": "node / web socket server for quicky finger game",
 	"main": "index.js",
 	"type": "module",

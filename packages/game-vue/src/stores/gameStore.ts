@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 // import { calculateScore } from "../utils/scoring";
-import { calculateScore } from "@quick-finger/shared/src/index";
+import { calculateScore } from "@quicky-finger/shared";
 
 export const useGameStore = defineStore("game", () => {
   // State

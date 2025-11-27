@@ -1,4 +1,4 @@
-@import url("../../shared/design-tokens.css");
+@import url("@quicky-finger/shared/src/styles/design-tokens.css");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

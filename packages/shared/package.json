@@ -1,5 +1,5 @@
 {
-  "name": "@quick-finger/shared",
+  "name": "@quicky-finger/shared",
   "version": "0.11.0",
   "type": "module",
   "main": "./src/index.ts",
