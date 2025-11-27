@@ -68,15 +68,10 @@ A high-performance, real-time multiplayer game built with modern web technologie
 
 ```bash
 # Clone the repository
-git clone https://github.com/glava11/quicky-finger.git
-cd quicky-finger
+git clone https://github.com/glava11/web-game-demo.git
+cd web-game-demo
 
-# Install frontend dependencies
-cd game-vue
-npm install
-
-# Install server dependencies
-cd ../ws-server
+# Install all dependencies in monorepo
 npm install
 ```
 
@@ -85,15 +80,15 @@ npm install
 **Terminal 1 - Start Server:**
 
 ```bash
-cd ws-server
-npm run dev
+# cd ws-server
+npm run dev:server
 ```
 
 **Terminal 2 - Start Frontend:**
 
 ```bash
-cd game-vue
-npm run dev
+# cd game-vue
+npm run dev:vue
 ```
 
 Open http://localhost:5173 and play!
@@ -208,17 +203,6 @@ See [DEPLOYMENT.md](./docs/DEPLOYMENT.md) for detailed instructions.
 
 - [ ] Difficulty levels
 - [ ] server saving the leaderboards data (and loading if any, on boot up)
-- [ ] integrating as microfrontends
-
----
-
-## Documentation
-
-- [Architecture](./docs/ARCHITECTURE.md) - System design and decisions
-- [API Protocol](./docs/API.md) - WebSocket message format
-- [Development](../../development_doc.md) - Technical decisions
-- [Learning](../../learning_doc.md) - Process and insights
-- [Project structure](../../project_structure.md) - Project structure
 
 ---
 

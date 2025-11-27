@@ -1,0 +1,17 @@
+{
+  "name": "quicky-finger",
+  "version": "0.11.0",
+  "private": true,
+  "workspaces": ["packages/ws-server", "packages/game-vue", "packages/shared"],
+  "scripts": {
+    "dev:vue": "npm run dev --workspace=game-vue",
+    "dev:react": "npm run dev --workspace=game-react",
+    "dev:server": "npm run dev --workspace=ws-server",
+    "build:vue": "npm run build --workspace=game-vue",
+    "build:react": "npm run build --workspace=game-react",
+    "build:server": "npm run build --workspace=ws-server",
+    "build:all": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  }
+}

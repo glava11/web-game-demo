@@ -1,0 +1,24 @@
+{
+	"name": "ws-server",
+	"version": "0.11.0",
+	"description": "node / web socket server for quicky finger game",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node ./src/server.ts",
+		"dev": "node --watch ./src/server.ts",
+		"tsc": "tsx --watch ./src/server.ts",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"ws": "^8.18.3"
+	},
+	"devDependencies": {
+		"@types/node": "^24.7.2",
+		"@types/ws": "^8.18.1",
+		"typescript": "^5.9.3"
+	}
+}
