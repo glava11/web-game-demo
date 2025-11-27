@@ -59,6 +59,17 @@ A high-performance, real-time multiplayer game built with modern web technologie
 
 ## Quick Start
 
+This repository is a NPM Monorepo now !
+All npm scripts are in root
+
+```
+// new structure
+monorepo
+  - packages
+    - game-vue
+    - shared
+    - ws-server
+```
 ### Prerequisites
 
 - Node.js 20+
@@ -80,14 +91,12 @@ npm install
 **Terminal 1 - Start Server:**
 
 ```bash
-# cd ws-server
 npm run dev:server
 ```
 
 **Terminal 2 - Start Frontend:**
 
 ```bash
-# cd game-vue
 npm run dev:vue
 ```
 
@@ -102,7 +111,7 @@ Open http://localhost:5173 and play!
 npm test
 
 # Run with coverage
-npm test -- --coverage
+npm test --coverage
 
 # Run specific test suite
 npm test integration
