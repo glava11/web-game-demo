@@ -1,0 +1,9 @@
+{
+  "name": "quick-finger",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "dev:vue": "npm run dev -w game-vue",
+    "dev:server": "npm run dev -w ws-server"
+  }
+}
