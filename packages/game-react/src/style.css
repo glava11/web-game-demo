@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Import shared design tokens */
+@import url('../../../shared/design-tokens.css');
+
+body {
+  margin: 0;
+  font-family: var(--font-family);
+  background: var(--color-bg-dark);
+  color: var(--color-text-primary);
+}
+
+#root {
+  min-height: 100vh;
+}
