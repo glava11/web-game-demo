@@ -10,12 +10,13 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@quicky-finger/shared": "workspace:*",
+    "@quicky-finger/shared": "file:*",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "zustand": "^5.0.9"
-  },
-  "devDependencies": {
+},
+"devDependencies": {
+    "@tailwindcss/postcss": "^4.1.17",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.48.1",

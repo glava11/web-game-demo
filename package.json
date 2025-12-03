@@ -2,7 +2,7 @@
   "name": "quicky-finger",
   "version": "0.11.0",
   "private": true,
-  "workspaces": ["packages/ws-server", "packages/game-vue", "packages/shared"],
+  "workspaces": ["packages/ws-server", "packages/game-vue", "packages/game-react", "packages/shared"],
   "scripts": {
     "dev:vue": "npm run dev --workspace=game-vue",
     "dev:react": "npm run dev --workspace=game-react",
