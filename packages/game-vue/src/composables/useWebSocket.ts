@@ -2,6 +2,8 @@ import { ref, onUnmounted, watch } from "vue";
 import type { GameMessage, ScoreSubmission } from "@quicky-finger/shared";
 
 const WS_URL = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
+console.log("import.meta.env.VITE_WS_URL: ", WS_URL);
+console.log("import.meta.env.PROD: ", import.meta.env.PROD);
 
 export function useWebSocket() {
   const ws = ref<WebSocket | null>(null);
