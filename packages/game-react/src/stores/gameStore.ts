@@ -28,11 +28,13 @@ export const useGameStore = create<GameState>((set, get) => ({
   hasScore: () => get().currentScore !== null,
   
   // Actions
-  startGame: () => set({
-    isPlaying: true,
-    currentScore: null,
-    sliderPosition: 50,
-  }),
+  startGame: () => {
+    set({
+        isPlaying: true,
+        currentScore: null,
+        sliderPosition: 50,
+    })
+  },
   
   stopGame: () => {
     const { isPlaying, sliderPosition, bestScore } = get()

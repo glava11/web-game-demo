@@ -6,6 +6,7 @@ const CYCLE_DURATION = 2000 // 2 seconds for full cycle
 export function useGameLoop() {
   const frameIdRef = useRef<number | null>(null)
   const startTimeRef = useRef<number>(0)
+  const direction = useRef<1 | -1>(1); // 1 = right, -1 = left
   const { isPlaying, updatePosition } = useGameStore()
 
   const animate = useCallback((timestamp: number) => {
@@ -18,6 +19,7 @@ export function useGameLoop() {
     
     // Sine wave for smooth oscillation
     const position = 50 + 50 * Math.sin(progress * Math.PI * 2)
+    direction.current = Math.cos(progress * Math.PI * 2) >= 0 ? -1 : 1;
     
     updatePosition(position)
 
@@ -49,5 +51,5 @@ export function useGameLoop() {
     }
   }, [isPlaying, start, stop])
 
-  return { start, stop }
+  return { start, stop, direction }
 }

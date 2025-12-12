@@ -1,11 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import type { GameMessage, ScoreSubmission } from '@quicky-finger/shared'
 
-const WS_URL = process.env.PROD 
-  ? 'wss://your-server.heroku.app'
-  : 'ws://localhost:8080'
-
-console.log("process.env.PROD: ", process.env.PROD);
+const WS_URL = 'ws://localhost:8080'
 
 export function useWebSocket() {
   const [connected, setConnected] = useState(false)
@@ -18,18 +14,18 @@ export function useWebSocket() {
       const ws = new WebSocket(WS_URL)
 
       ws.onopen = () => {
-        console.log('✅ WebSocket connected')
+        console.log('WebSocket connected')
         setConnected(true)
         setError(null)
       }
 
       ws.onclose = () => {
-        console.log('👋 WebSocket disconnected')
+        console.log('WebSocket disconnected')
         setConnected(false)
       }
 
       ws.onerror = () => {
-        console.error('❌ WebSocket error')
+        console.error('WebSocket error')
         setError('Connection error')
       }
 

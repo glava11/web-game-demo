@@ -1,15 +1,66 @@
 @import url("@quicky-finger/shared/src/styles/design-tokens.css");
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@font-face {
+  font-family: "Press Start 2P";
+  font-style: normal;
+  src:
+    local("Press Start 2P"),
+    url(@/assets/PressStart2P-Regular.ttf) format("truetype");
+}
+
+.press-start-2p {
+  font-family: "Press Start 2P", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  text-transform: uppercase;
+}
 
 body {
+  @apply bg-gray-900 text-white;
   margin: 0;
   font-family: var(--font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   background: var(--color-bg-dark);
   color: var(--color-text-primary);
 }
 
-#root {
-  min-height: 100vh;
+#app {
+  @apply min-h-screen flex items-center justify-center p-0 md:p-4;
+}
+
+/* Button base styles */
+.btn {
+  align-self: flex-end;
+  min-width: 15rem !important;
+  font-size: 2rem !important;
+  line-height: 3rem !important;
+  @apply px-6 py-3 rounded-lg font-semibold transition-all duration-150;
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900;
+}
+
+.btn-primary {
+  background-color: var(--color-success) !important;
+  text-shadow:
+    0 0 20px var(--color-success),
+    0 0 40px var(--color-success);
+  color: var(--start-btn-text-color) !important;
+  @apply hover:bg-blue-600 text-white;
+}
+
+.btn-success {
+  @apply hover:bg-green-600 text-white;
+}
+
+.btn-danger {
+  @apply hover:bg-red-600 text-white text-2xl;
+}
+
+.btn:active {
+  @apply scale-95;
+}
+
+.btn:disabled {
+  @apply opacity-50 cursor-not-allowed;
 }
